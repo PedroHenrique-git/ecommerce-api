@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    container_name: database-ecommerce-api
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - '5432:5432'
+    networks:
+      - postgres
+    restart: always
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+  postgres:

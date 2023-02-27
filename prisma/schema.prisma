@@ -1,0 +1,68 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id  Int @default(autoincrement()) @id
+  name String @db.VarChar(100)
+  price Decimal @db.Decimal(10, 2)
+  image String @db.VarChar(50)
+  category category @relation(fields: [categoryId], references: [id])
+  categoryId Int @map("category_id")
+  orderItem OrderItem?
+
+  @@map("product")
+}
+
+model Client {
+  id Int @default(autoincrement()) @id
+  name String @db.VarChar(100)
+  address String @db.VarChar(150)
+  email String @db.VarChar(50) @unique
+  password String @db.VarChar(255)
+  cellphone String @db.VarChar(30)
+  orders Order[]
+
+  @@map("client")
+}
+
+model Order {
+  id Int @default(autoincrement()) @id
+  status String @db.VarChar(20)
+  client Client @relation(fields: [clientId], references: [id])
+  clientId Int @map("client_id")
+  ordersItems OrderItems[]
+
+  @@map("order")
+}
+
+model OrderItem {
+  id Int @default(autoincrement()) @id
+  product Product @relation(fields: [productId], references: [id])
+  productId Int @unique @map("product_id")
+  orders OrderItems[]
+
+  @@map("order_item")
+}
+
+model OrderItems {
+  order Order @relation(fields: [orderId], references: [id])
+  orderId Int @map("order_id")
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
+  orderItemId Int @map("order_item_id")
+
+  @@id([orderId, orderItemId])
+  @@map("order_items")
+}
+
+model category {
+  id Int @default(autoincrement()) @id
+  name String @db.VarChar(100)
+  products Product[]
+}
+
