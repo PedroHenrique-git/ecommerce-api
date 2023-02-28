@@ -9,11 +9,16 @@ export class PrismaCategoryRepository implements CategoryRepository {
   constructor(private prisma: PrismaService) {}
 
   create(category: CreateCategoryDto): Promise<Category> {
-    return this.prisma.category.create({ data: category });
+    return this.prisma.category.create({
+      data: category,
+    });
   }
 
   findById(id: number): Promise<Category> {
-    return this.prisma.category.findUnique({ where: { id } });
+    return this.prisma.category.findUnique({
+      where: { id },
+      include: { products: true },
+    });
   }
 
   update(id: number, category: CreateCategoryDto): Promise<Category> {
@@ -25,6 +30,6 @@ export class PrismaCategoryRepository implements CategoryRepository {
   }
 
   getAll(): Promise<Category[]> {
-    return this.prisma.category.findMany();
+    return this.prisma.category.findMany({ include: { products: true } });
   }
 }
