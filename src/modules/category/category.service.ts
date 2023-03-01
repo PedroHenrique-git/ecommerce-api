@@ -22,7 +22,7 @@ export class CategoryService {
     return this.categoryRepository.delete(id);
   }
 
-  getAll() {
-    return this.categoryRepository.getAll();
+  find(page: number, take: number) {
+    return this.categoryRepository.find(page, take);
   }
 }

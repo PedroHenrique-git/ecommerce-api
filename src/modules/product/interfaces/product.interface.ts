@@ -1,9 +1,10 @@
-import { Category } from 'src/modules/category/interfaces/category.interface';
+import { Category } from '@prisma/client';
 
 export interface Product {
+  id: number;
   name: string;
   price: number;
   image: string;
-  category: Category;
+  category?: Category;
   categoryId: number;
 }

@@ -1,13 +1,16 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
+import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
@@ -39,7 +42,12 @@ export class CategoryController {
   }
 
   @Get('find')
-  getAll() {
-    return this.categoryService.getAll();
+  find(
+    @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
+    page: number,
+    @Query('take', new DefaultValuePipe(DEFAULT_TAKE), ParseIntPipe)
+    take: number,
+  ) {
+    return this.categoryService.find(page, take);
   }
 }
