@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:reset": "prisma migrate reset",
     "prisma:migration": "prisma migrate dev --name",
-    "prisma:reset-db": "yarn prisma:reset && ts-node -r tsconfig-paths/register src/shared/infra/mainSeeder.ts"
+    "prisma:reset-db": "yarn prisma:reset && ts-node -r tsconfig-paths/register src/shared/infra/seeder/main.seeder.ts"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -70,6 +70,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
+    }
   }
 }

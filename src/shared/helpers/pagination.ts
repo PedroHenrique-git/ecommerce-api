@@ -16,7 +16,8 @@ export function getPagination({
   const totalOfPages = Math.ceil(totalOfItems / take);
   const nextSkip = (page - 1) * take;
 
-  const nextPage = page === totalOfPages ? null : page + 1;
+  const nextPage =
+    page === totalOfPages || totalOfPages === 0 ? null : page + 1;
 
   const nextPageUrl = nextPage
     ? `${HOST}${route}?page=${nextPage}&take=${take}`

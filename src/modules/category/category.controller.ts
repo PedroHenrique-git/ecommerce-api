@@ -11,6 +11,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
+import { handlePrismaError } from 'src/shared/helpers/handlePrismaError';
+import { handleRecordNotFound } from 'src/shared/helpers/handleRecordNotFound';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
@@ -19,35 +21,61 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    try {
+      return await this.categoryService.create(createCategoryDto);
+    } catch (err) {
+      return handlePrismaError(err);
+    }
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: CreateCategoryDto,
   ) {
-    return this.categoryService.update(id, updateCategoryDto);
+    try {
+      return await this.categoryService.update(id, updateCategoryDto);
+    } catch (err) {
+      return handlePrismaError(err);
+    }
   }
 
   @Get('find/:id')
-  findById(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.findById(id);
+  async findById(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const result = await this.categoryService.findById(id);
+
+      if (!result) {
+        return handleRecordNotFound('Category');
+      }
+
+      return result;
+    } catch (err) {
+      return handlePrismaError(err);
+    }
   }
 
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.delete(id);
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.categoryService.delete(id);
+    } catch (err) {
+      return handlePrismaError(err);
+    }
   }
 
   @Get('find')
-  find(
+  async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,
     @Query('take', new DefaultValuePipe(DEFAULT_TAKE), ParseIntPipe)
     take: number,
   ) {
-    return this.categoryService.find(page, take);
+    try {
+      return await this.categoryService.find(page, take);
+    } catch (err) {
+      return handlePrismaError(err);
+    }
   }
 }
