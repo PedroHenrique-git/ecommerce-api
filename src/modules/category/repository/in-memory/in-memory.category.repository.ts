@@ -4,7 +4,7 @@ import { CreateCategoryDto } from '../../dto/create-category.dto';
 import { Category } from '../../interfaces/category.interface';
 import { CategoryRepository } from '../category.repository';
 
-export class InMemoryCategoryRepository implements CategoryRepository {
+export class InMemoryCategoryRepository extends CategoryRepository {
   private categories: Category[] = [];
 
   private getNextId() {

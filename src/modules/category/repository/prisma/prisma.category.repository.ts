@@ -7,8 +7,10 @@ import { Category } from '../../interfaces/category.interface';
 import { CategoryRepository } from '../category.repository';
 
 @Injectable()
-export class PrismaCategoryRepository implements CategoryRepository {
-  constructor(private prisma: PrismaService) {}
+export class PrismaCategoryRepository extends CategoryRepository {
+  constructor(private prisma: PrismaService) {
+    super();
+  }
 
   create(category: CreateCategoryDto): Promise<Category> {
     return this.prisma.category.create({
