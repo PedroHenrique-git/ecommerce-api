@@ -13,6 +13,7 @@ export class PrismaCategoryRepository implements CategoryRepository {
   create(category: CreateCategoryDto): Promise<Category> {
     return this.prisma.category.create({
       data: category,
+      include: { products: true },
     });
   }
 
@@ -24,11 +25,18 @@ export class PrismaCategoryRepository implements CategoryRepository {
   }
 
   update(id: number, category: CreateCategoryDto): Promise<Category> {
-    return this.prisma.category.update({ where: { id }, data: category });
+    return this.prisma.category.update({
+      where: { id },
+      data: category,
+      include: { products: true },
+    });
   }
 
   delete(id: number): Promise<Category> {
-    return this.prisma.category.delete({ where: { id } });
+    return this.prisma.category.delete({
+      where: { id },
+      include: { products: true },
+    });
   }
 
   async find(page: number, take: number): Promise<Pagination<Category[]>> {
