@@ -1,9 +1,9 @@
-import { Category } from '@prisma/client';
+import { Category, Prisma } from '@prisma/client';
 
 export interface Product {
   id: number;
   name: string;
-  price: number;
+  price: Prisma.Decimal;
   image: string;
   category?: Category;
   categoryId: number;

@@ -3,7 +3,7 @@ CREATE TABLE "product" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
-    "image" VARCHAR(50) NOT NULL,
+    "image" VARCHAR(150) NOT NULL,
     "category_id" INTEGER NOT NULL,
 
     CONSTRAINT "product_pkey" PRIMARY KEY ("id")
