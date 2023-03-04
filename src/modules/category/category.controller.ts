@@ -13,6 +13,7 @@ import {
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { handlePrismaError } from 'src/shared/helpers/handlePrismaError';
 import { handleRecordNotFound } from 'src/shared/helpers/handleRecordNotFound';
+import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
@@ -21,7 +22,9 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Post()
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
+  async create(
+    @Body(ValidationSchemaPipe) createCategoryDto: CreateCategoryDto,
+  ) {
     try {
       return await this.categoryService.create(createCategoryDto);
     } catch (err) {
@@ -32,7 +35,7 @@ export class CategoryController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateCategoryDto: CreateCategoryDto,
+    @Body(ValidationSchemaPipe) updateCategoryDto: CreateCategoryDto,
   ) {
     try {
       return await this.categoryService.update(id, updateCategoryDto);

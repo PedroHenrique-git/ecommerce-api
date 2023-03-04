@@ -14,10 +14,15 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
+import { deleteFile } from 'src/shared/helpers/deleteFile';
+import { extractFilenameFromUrl } from 'src/shared/helpers/extractFilenameFromUrl';
 import { generateImageUrl } from 'src/shared/helpers/generateImageUrl';
 import { handlePrismaError } from 'src/shared/helpers/handlePrismaError';
 import { handleRecordNotFound } from 'src/shared/helpers/handleRecordNotFound';
+import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { CastFormDataPipe } from './pipes/cast-form-data.pipe';
 import { ProductService } from './product.service';
 
 @Controller('product')
@@ -27,14 +32,15 @@ export class ProductController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async create(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() productCategoryDto: CreateProductDto,
+    @UploadedFile()
+    file: Express.Multer.File,
+    @Body(CastFormDataPipe, ValidationSchemaPipe)
+    productCategoryDto: CreateProductDto,
   ) {
     try {
       return await this.productService.create({
         ...productCategoryDto,
         image: generateImageUrl(file.filename),
-        categoryId: Number(productCategoryDto.categoryId),
       });
     } catch (err) {
       return handlePrismaError(err);
@@ -42,12 +48,30 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductDto: CreateProductDto,
+    @UploadedFile(new DefaultValuePipe(null))
+    file: Express.Multer.File,
+    @Body(CastFormDataPipe, ValidationSchemaPipe)
+    updateProductDto: UpdateProductDto,
   ) {
     try {
-      return await this.productService.update(id, updateProductDto);
+      if (file) {
+        const currentProduct = await this.productService.findById(id);
+
+        if (!currentProduct) throw new Error('Record does not exists');
+
+        const filename = extractFilenameFromUrl(currentProduct.image);
+        await deleteFile(`public/images/products/${filename}`);
+      }
+
+      const updatedProduct = await this.productService.update(id, {
+        ...updateProductDto,
+        ...(file ? { image: generateImageUrl(file.filename) } : {}),
+      });
+
+      return updatedProduct;
     } catch (err) {
       return handlePrismaError(err);
     }
@@ -71,7 +95,12 @@ export class ProductController {
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.productService.delete(id);
+      const removedProduct = await this.productService.delete(id);
+      const filename = extractFilenameFromUrl(removedProduct.image);
+
+      await deleteFile(`public/images/products/${filename}`);
+
+      return removedProduct;
     } catch (err) {
       return handlePrismaError(err);
     }
