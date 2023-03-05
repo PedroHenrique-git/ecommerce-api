@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { resolve } from 'path';
+import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { ProductModule } from 'src/modules/product/product.module';
 import { InMemoryProductRepository } from 'src/modules/product/repository/in-memory/in-memory.product.repository';
 import { ProductRepository } from 'src/modules/product/repository/product.repository';
@@ -27,6 +28,8 @@ describe('Product', () => {
     const moduleRef = await Test.createTestingModule({
       imports: [ProductModule],
     })
+      .overrideProvider(PrismaService)
+      .useValue(null)
       .overrideProvider(ProductRepository)
       .useClass(InMemoryProductRepository)
       .compile();

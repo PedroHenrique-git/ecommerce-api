@@ -1,5 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { OrderItemModule } from 'src/modules/order-item/order-item.module';
 import { InMemoryOrderItemRepository } from 'src/modules/order-item/repository/in-memory/in-memory.order-item.repository';
 import { OrderItemRepository } from 'src/modules/order-item/repository/order-item.repository';
@@ -7,12 +8,13 @@ import * as request from 'supertest';
 
 describe('OrderItem', () => {
   let app: INestApplication;
-  const categoryName = `Test${new Date().toISOString()}`;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [OrderItemModule],
     })
+      .overrideProvider(PrismaService)
+      .useValue(null)
       .overrideProvider(OrderItemRepository)
       .useClass(InMemoryOrderItemRepository)
       .compile();

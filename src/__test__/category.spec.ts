@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { CategoryModule } from 'src/modules/category/category.module';
 import { CategoryRepository } from 'src/modules/category/repository/category.repository';
 import { InMemoryCategoryRepository } from 'src/modules/category/repository/in-memory/in-memory.category.repository';
+import { PrismaService } from 'src/modules/common/database/prisma.service';
 import * as request from 'supertest';
 
 describe('Category', () => {
@@ -13,6 +14,8 @@ describe('Category', () => {
     const moduleRef = await Test.createTestingModule({
       imports: [CategoryModule],
     })
+      .overrideProvider(PrismaService)
+      .useValue(null)
       .overrideProvider(CategoryRepository)
       .useClass(InMemoryCategoryRepository)
       .compile();
