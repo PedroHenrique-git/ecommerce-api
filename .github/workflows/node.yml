@@ -5,12 +5,23 @@ on:
   pull_request:
     branches: [master]
 jobs:
-  build:
+  test:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       HOST_DEV: ${{ secrets.HOST_DEV }}
       HOST_PROD: ${{ secrets.HOST_PROD }}
       PORT: ${{ secrets.PORT }}
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     strategy:
       matrix:
         node-version: [14.x, 16.x]
