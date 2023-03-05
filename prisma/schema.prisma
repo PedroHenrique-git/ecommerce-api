@@ -12,7 +12,7 @@ model Product {
   name String @db.VarChar(100)
   price Decimal @db.Decimal(10, 2)
   image String @db.VarChar(150)
-  category Category @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId Int @map("category_id")
   orderItem OrderItem?
 
@@ -34,7 +34,7 @@ model Client {
 model Order {
   id Int @default(autoincrement()) @id
   status String @db.VarChar(20)
-  client Client @relation(fields: [clientId], references: [id])
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   clientId Int @map("client_id")
   ordersItems OrderItems[]
 
@@ -44,7 +44,7 @@ model Order {
 model OrderItem {
   id Int @default(autoincrement()) @id
   quantity Int
-  product Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   productId Int @unique @map("product_id")
   orders OrderItems[]
 
@@ -52,9 +52,9 @@ model OrderItem {
 }
 
 model OrderItems {
-  order Order @relation(fields: [orderId], references: [id])
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   orderId Int @map("order_id")
-  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   orderItemId Int @map("order_item_id")
 
   @@id([orderId, orderItemId])
