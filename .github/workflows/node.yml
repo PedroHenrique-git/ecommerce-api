@@ -6,6 +6,11 @@ on:
     branches: [master]
 jobs:
   build:
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      HOST_DEV: ${{ secrets.HOST_DEV }}
+      HOST_PROD: ${{ secrets.HOST_PROD }}
+      PORT: ${{ secrets.PORT }}
     strategy:
       matrix:
         node-version: [14.x, 16.x]
