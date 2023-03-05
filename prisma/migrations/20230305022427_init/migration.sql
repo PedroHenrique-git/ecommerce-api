@@ -33,6 +33,7 @@ CREATE TABLE "order" (
 -- CreateTable
 CREATE TABLE "order_item" (
     "id" SERIAL NOT NULL,
+    "quantity" INTEGER NOT NULL,
     "product_id" INTEGER NOT NULL,
 
     CONSTRAINT "order_item_pkey" PRIMARY KEY ("id")

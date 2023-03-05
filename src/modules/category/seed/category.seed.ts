@@ -1,4 +1,4 @@
-import { randProductCategory } from '@ngneat/falso';
+import { faker } from '@faker-js/faker';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 
 export default function seederCategory(quantityOfCategories: number) {
@@ -6,7 +6,7 @@ export default function seederCategory(quantityOfCategories: number) {
 
   for (let i = 0; i < quantityOfCategories; i++) {
     categories.push({
-      name: randProductCategory(),
+      name: faker.commerce.department(),
     });
   }
 
