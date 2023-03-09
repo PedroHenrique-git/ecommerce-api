@@ -4,7 +4,7 @@ import { getPagination } from 'src/shared/helpers/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateClientDto } from '../../dto/create-client.dto';
 import { UpdateClientDto } from '../../dto/update-client.dto';
-import { Client } from '../../interfaces/client.interface';
+import { Client } from '../../protocols/client.interface';
 import { ClientRepository } from '../client.repository';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderItemsDto } from '../dto/create-order-items.dto';
-import { OrderItems } from '../interfaces/order-items.interface';
+import { OrderItems } from '../protocols/order-items.interface';
 
 export abstract class OrderItemsRepository {
   abstract create(orderItems: CreateOrderItemsDto): Promise<OrderItems>;

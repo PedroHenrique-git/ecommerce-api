@@ -4,8 +4,8 @@ import { getPagination } from 'src/shared/helpers/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderDto } from '../../dto/create-order.dto';
 import { UpdateOrderDto } from '../../dto/update-order.dto';
-import { OrderWithProducts } from '../../interfaces/order-with-products.interface';
-import { Order } from '../../interfaces/order.interface';
+import { OrderWithProducts } from '../../protocols/order-with-products.type';
+import { Order } from '../../protocols/order.interface';
 import { OrderRepository } from '../order.repository';
 
 @Injectable()

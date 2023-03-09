@@ -2,7 +2,7 @@ import { Order, OrderItem } from '@prisma/client';
 import { getPagination } from 'src/shared/helpers/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderItemsDto } from '../../dto/create-order-items.dto';
-import { OrderItems } from '../../interfaces/order-items.interface';
+import { OrderItems } from '../../protocols/order-items.interface';
 import { OrderItemsRepository } from '../order-items.repository';
 
 export class InMemoryOrderItemsRepository extends OrderItemsRepository {

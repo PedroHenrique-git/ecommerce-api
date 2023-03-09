@@ -1,6 +1,6 @@
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateCategoryDto } from '../dto/create-category.dto';
-import { Category } from '../interfaces/category.interface';
+import { Category } from '../protocols/category.interface';
 
 export abstract class CategoryRepository {
   abstract create(category: CreateCategoryDto): Promise<Category>;

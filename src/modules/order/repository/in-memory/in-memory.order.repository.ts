@@ -3,7 +3,7 @@ import { getPagination } from 'src/shared/helpers/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderDto } from '../../dto/create-order.dto';
 import { UpdateOrderDto } from '../../dto/update-order.dto';
-import { Order } from '../../interfaces/order.interface';
+import { Order } from '../../protocols/order.interface';
 import { OrderRepository } from '../order.repository';
 
 export class InMemoryOrderRepository extends OrderRepository {

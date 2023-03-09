@@ -3,7 +3,7 @@ import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { getPagination } from 'src/shared/helpers/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderItemDto } from '../../dto/create-order-item.dto';
-import { OrderItem } from '../../interfaces/order-item.interface';
+import { OrderItem } from '../../protocols/order-item.interface';
 import { OrderItemRepository } from '../order-item.repository';
 
 @Injectable()
