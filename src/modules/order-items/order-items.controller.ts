@@ -71,7 +71,7 @@ export class OrderItemsController {
     }
   }
 
-  @Delete(':id')
+  @Delete(':orderId/:orderItemId')
   async delete(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
