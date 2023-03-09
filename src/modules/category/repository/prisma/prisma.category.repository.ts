@@ -3,7 +3,7 @@ import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { getPagination } from 'src/shared/helpers/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateCategoryDto } from '../../dto/create-category.dto';
-import { Category } from '../../interfaces/category.interface';
+import { Category } from '../../protocols/category.interface';
 import { CategoryRepository } from '../category.repository';
 
 @Injectable()

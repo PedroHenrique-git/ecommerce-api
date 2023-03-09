@@ -3,7 +3,7 @@ import { getPagination } from 'src/shared/helpers/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { UpdateProductDto } from '../../dto/update-product.dto';
-import { Product } from '../../interfaces/product.interface';
+import { Product } from '../../protocols/product.interface';
 import { ProductRepository } from '../product.repository';
 
 export class InMemoryProductRepository extends ProductRepository {
