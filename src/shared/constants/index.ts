@@ -12,3 +12,5 @@ export const HOST =
   process.env.NODE_ENV === 'development'
     ? process.env.HOST_DEV
     : process.env.HOST_PROD;
+
+export const NUMBER_OF_SALTS = 10;

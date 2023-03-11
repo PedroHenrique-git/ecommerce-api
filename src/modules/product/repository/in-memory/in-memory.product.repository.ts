@@ -1,5 +1,5 @@
 import { Category, Prisma } from '@prisma/client';
-import { getPagination } from 'src/shared/helpers/pagination';
+import { getPagination } from 'src/shared/helpers/general/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { UpdateProductDto } from '../../dto/update-product.dto';

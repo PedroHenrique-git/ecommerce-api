@@ -1,4 +1,4 @@
-import { HOST } from '../constants';
+import { HOST } from '../../constants';
 
 type GetPagination = {
   page: number;

@@ -14,11 +14,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { deleteFile } from 'src/shared/helpers/deleteFile';
-import { extractFilenameFromUrl } from 'src/shared/helpers/extractFilenameFromUrl';
-import { generateImageUrl } from 'src/shared/helpers/generateImageUrl';
-import { handlePrismaError } from 'src/shared/helpers/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/handleRecordNotFound';
+import { deleteFile } from 'src/shared/helpers/files/deleteFile';
+import { extractFilenameFromUrl } from 'src/shared/helpers/files/extractFilenameFromUrl';
+import { generateImageUrl } from 'src/shared/helpers/general/generateImageUrl';
+import { handlePrismaError } from 'src/shared/helpers/general/handlePrismaError';
+import { handleRecordNotFound } from 'src/shared/helpers/general/handleRecordNotFound';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';

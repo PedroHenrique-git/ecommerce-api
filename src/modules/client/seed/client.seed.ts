@@ -1,4 +1,6 @@
 import { faker } from '@faker-js/faker';
+import * as bcrypt from 'bcrypt';
+import { NUMBER_OF_SALTS } from 'src/shared/constants';
 import { CreateClientDto } from '../dto/create-client.dto';
 
 export default function seederClient(quantityOfClients: number) {
@@ -10,7 +12,7 @@ export default function seederClient(quantityOfClients: number) {
       cellphone: faker.phone.number(),
       email: faker.internet.email(),
       name: faker.name.fullName(),
-      password: faker.internet.password(),
+      password: bcrypt.hashSync(faker.internet.password(), NUMBER_OF_SALTS),
     });
   }
 

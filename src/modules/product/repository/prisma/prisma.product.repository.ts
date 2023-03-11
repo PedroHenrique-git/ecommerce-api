@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
-import { getPagination } from 'src/shared/helpers/pagination';
+import { getPagination } from 'src/shared/helpers/general/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { Product } from '../../protocols/product.interface';

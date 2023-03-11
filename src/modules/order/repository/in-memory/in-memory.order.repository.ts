@@ -1,5 +1,5 @@
 import { Client } from '@prisma/client';
-import { getPagination } from 'src/shared/helpers/pagination';
+import { getPagination } from 'src/shared/helpers/general/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderDto } from '../../dto/create-order.dto';
 import { UpdateOrderDto } from '../../dto/update-order.dto';

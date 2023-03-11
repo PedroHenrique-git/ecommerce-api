@@ -1,4 +1,4 @@
-import { getPagination } from 'src/shared/helpers/pagination';
+import { getPagination } from 'src/shared/helpers/general/pagination';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateCategoryDto } from '../../dto/create-category.dto';
 import { Category } from '../../protocols/category.interface';

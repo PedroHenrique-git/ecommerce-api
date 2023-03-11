@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { DEFAULT_ERROR_MESSAGE } from '../constants';
+import { DEFAULT_ERROR_MESSAGE } from '../../constants';
 
 type Error = { error: boolean; message: string };
 

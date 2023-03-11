@@ -11,19 +11,25 @@ import {
   Query,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { handlePrismaError } from 'src/shared/helpers/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/handleRecordNotFound';
+import { handlePrismaError } from 'src/shared/helpers/general/handlePrismaError';
+import { handleRecordNotFound } from 'src/shared/helpers/general/handleRecordNotFound';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { HashPassword } from './pipes/hash-password.pipe';
+import { ValidateEmail } from './pipes/validate-email.pipe';
+import { ValidatePassword } from './pipes/validate-password.pipe';
 
 @Controller('client')
 export class ClientController {
   constructor(private clientService: ClientService) {}
 
   @Post()
-  async create(@Body(ValidationSchemaPipe) createClientDto: CreateClientDto) {
+  async create(
+    @Body(ValidationSchemaPipe, ValidateEmail, ValidatePassword, HashPassword)
+    createClientDto: CreateClientDto,
+  ) {
     try {
       return await this.clientService.create(createClientDto);
     } catch (err) {
@@ -34,7 +40,8 @@ export class ClientController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationSchemaPipe) updateClientDto: UpdateClientDto,
+    @Body(ValidationSchemaPipe, ValidateEmail, ValidatePassword, HashPassword)
+    updateClientDto: UpdateClientDto,
   ) {
     try {
       return await this.clientService.update(id, updateClientDto);
