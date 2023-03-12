@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
-import { getPagination } from 'src/shared/helpers/general/pagination';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateCategoryDto } from '../../dto/create-category.dto';
 import { Category } from '../../protocols/category.interface';
@@ -8,7 +8,10 @@ import { CategoryRepository } from '../category.repository';
 
 @Injectable()
 export class PrismaCategoryRepository extends CategoryRepository {
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private paginationService: PaginationService,
+  ) {
     super();
   }
 
@@ -44,12 +47,13 @@ export class PrismaCategoryRepository extends CategoryRepository {
   async find(page: number, take: number): Promise<Pagination<Category[]>> {
     const totalOfItems = await this.prisma.category.count();
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/category/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/category/find',
+      });
 
     const results = await this.prisma.category.findMany({
       include: { products: true },

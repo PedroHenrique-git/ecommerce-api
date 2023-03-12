@@ -14,12 +14,10 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { deleteFile } from 'src/shared/helpers/files/deleteFile';
-import { extractFilenameFromUrl } from 'src/shared/helpers/files/extractFilenameFromUrl';
-import { generateImageUrl } from 'src/shared/helpers/general/generateImageUrl';
-import { handlePrismaError } from 'src/shared/helpers/general/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/general/handleRecordNotFound';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { FileService } from '../common/file/file.service';
+import { HandleErrorService } from '../common/handleError/handleError.service';
+import { ImageService } from '../common/image/image.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CastFormDataPipe } from './pipes/cast-form-data.pipe';
@@ -27,7 +25,12 @@ import { ProductService } from './product.service';
 
 @Controller('product')
 export class ProductController {
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private imageService: ImageService,
+    private fileService: FileService,
+    private handleErrorService: HandleErrorService,
+  ) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
@@ -40,10 +43,10 @@ export class ProductController {
     try {
       return await this.productService.create({
         ...productCategoryDto,
-        image: generateImageUrl(file.filename),
+        image: this.imageService.generateImageUrl(file.filename),
       });
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -62,18 +65,22 @@ export class ProductController {
 
         if (!currentProduct) throw new Error('Record does not exists');
 
-        const filename = extractFilenameFromUrl(currentProduct.image);
-        await deleteFile(`public/images/products/${filename}`);
+        const filename = this.fileService.extractFilenameFromUrl(
+          currentProduct.image,
+        );
+        await this.fileService.deleteFile(`public/images/products/${filename}`);
       }
 
       const updatedProduct = await this.productService.update(id, {
         ...updateProductDto,
-        ...(file ? { image: generateImageUrl(file.filename) } : {}),
+        ...(file
+          ? { image: this.imageService.generateImageUrl(file.filename) }
+          : {}),
       });
 
       return updatedProduct;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -83,12 +90,12 @@ export class ProductController {
       const result = await this.productService.findById(id);
 
       if (!result) {
-        return handleRecordNotFound('Product');
+        return this.handleErrorService.handleRecordNotFound('Product');
       }
 
       return result;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -96,13 +103,15 @@ export class ProductController {
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       const removedProduct = await this.productService.delete(id);
-      const filename = extractFilenameFromUrl(removedProduct.image);
+      const filename = this.fileService.extractFilenameFromUrl(
+        removedProduct.image,
+      );
 
-      await deleteFile(`public/images/products/${filename}`);
+      await this.fileService.deleteFile(`public/images/products/${filename}`);
 
       return removedProduct;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -116,7 +125,7 @@ export class ProductController {
     try {
       return await this.productService.find(page, take);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 }

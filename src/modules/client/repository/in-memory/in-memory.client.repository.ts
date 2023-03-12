@@ -1,11 +1,17 @@
-import { getPagination } from 'src/shared/helpers/general/pagination';
+import { Injectable } from '@nestjs/common';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateClientDto } from '../../dto/create-client.dto';
 import { UpdateClientDto } from '../../dto/update-client.dto';
 import { Client } from '../../protocols/client.interface';
 import { ClientRepository } from '../client.repository';
 
+@Injectable()
 export class InMemoryClientRepository extends ClientRepository {
+  constructor(private paginationService: PaginationService) {
+    super();
+  }
+
   private clients: Client[] = [];
 
   private getNextId() {
@@ -18,6 +24,8 @@ export class InMemoryClientRepository extends ClientRepository {
     const length = this.clients.push({
       id: this.getNextId(),
       orders: [],
+      provider: '',
+      providerId: '',
       ...client,
     });
 
@@ -39,6 +47,10 @@ export class InMemoryClientRepository extends ClientRepository {
 
   findById(id: number): Promise<Client> {
     return Promise.resolve(this.clients.find((c) => c.id === id));
+  }
+
+  findByEmail(email: string): Promise<Client> {
+    return Promise.resolve(this.clients.find((c) => c.email === email));
   }
 
   update(id: number, client: UpdateClientDto): Promise<Client> {
@@ -67,12 +79,13 @@ export class InMemoryClientRepository extends ClientRepository {
   find(page: number, take: number): Promise<Pagination<Client[]>> {
     const totalOfItems = this.clients.length;
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/client/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/client/find',
+      });
 
     const results = this.clients.slice(nextSkip, page * take);
 

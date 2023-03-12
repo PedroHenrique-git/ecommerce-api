@@ -1,12 +1,18 @@
+import { Injectable } from '@nestjs/common';
 import { Category, Prisma } from '@prisma/client';
-import { getPagination } from 'src/shared/helpers/general/pagination';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { UpdateProductDto } from '../../dto/update-product.dto';
 import { Product } from '../../protocols/product.interface';
 import { ProductRepository } from '../product.repository';
 
+@Injectable()
 export class InMemoryProductRepository extends ProductRepository {
+  constructor(private paginationService: PaginationService) {
+    super();
+  }
+
   private products: Product[] = [];
 
   private getNextId() {
@@ -70,12 +76,13 @@ export class InMemoryProductRepository extends ProductRepository {
   find(page: number, take: number): Promise<Pagination<Product[]>> {
     const totalOfItems = this.products.length;
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/product/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/product/find',
+      });
 
     const results = this.products.slice(nextSkip, page * take);
 

@@ -1,7 +1,6 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 
-import * as bcrypt from 'bcrypt';
-import { NUMBER_OF_SALTS } from 'src/shared/constants';
+import { BcryptService } from 'src/modules/common/bcrypt/bcrypt.service';
 import { CreateClientDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
 
@@ -11,6 +10,8 @@ type ClientDto = CreateClientDto | UpdateClientDto;
 export class HashPassword
   implements PipeTransform<ClientDto, Promise<ClientDto>>
 {
+  constructor(private bcryptService: BcryptService) {}
+
   async transform(
     value: ClientDto,
     { metatype }: ArgumentMetadata,
@@ -21,7 +22,7 @@ export class HashPassword
       return value;
     }
 
-    value.password = await bcrypt.hash(password, NUMBER_OF_SALTS);
+    value.password = await this.bcryptService.hash(password);
 
     return value;
   }

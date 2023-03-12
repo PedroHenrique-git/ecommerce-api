@@ -15,6 +15,10 @@ export class ClientService {
     return this.clientRepository.findById(id);
   }
 
+  findByEmail(email: string) {
+    return this.clientRepository.findByEmail(email);
+  }
+
   update(id: number, client: UpdateClientDto) {
     return this.clientRepository.update(id, client);
   }

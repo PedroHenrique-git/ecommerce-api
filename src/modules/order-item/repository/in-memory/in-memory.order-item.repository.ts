@@ -1,11 +1,17 @@
+import { Injectable } from '@nestjs/common';
 import { Product } from '@prisma/client';
-import { getPagination } from 'src/shared/helpers/general/pagination';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderItemDto } from '../../dto/create-order-item.dto';
 import { OrderItem } from '../../protocols/order-item.interface';
 import { OrderItemRepository } from '../order-item.repository';
 
+@Injectable()
 export class InMemoryOrderItemRepository extends OrderItemRepository {
+  constructor(private paginationService: PaginationService) {
+    super();
+  }
+
   private orderItems: OrderItem[] = [];
 
   private getNextId() {
@@ -68,12 +74,13 @@ export class InMemoryOrderItemRepository extends OrderItemRepository {
   find(page: number, take: number): Promise<Pagination<OrderItem[]>> {
     const totalOfItems = this.orderItems.length;
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/order-item/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/order-item/find',
+      });
 
     const results = this.orderItems.slice(nextSkip, page * take);
 

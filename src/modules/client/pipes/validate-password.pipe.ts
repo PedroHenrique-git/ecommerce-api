@@ -4,7 +4,7 @@ import {
   Injectable,
   PipeTransform,
 } from '@nestjs/common';
-import { isPasswordValid } from 'src/shared/helpers/validations/isPasswordValid';
+import { ValidationService } from 'src/modules/common/validation/validation.service';
 
 import { CreateClientDto } from '../dto/create-client.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
@@ -13,6 +13,8 @@ type ClientDto = CreateClientDto | UpdateClientDto;
 
 @Injectable()
 export class ValidatePassword implements PipeTransform<ClientDto, ClientDto> {
+  constructor(private validationService: ValidationService) {}
+
   transform(value: ClientDto, { metatype }: ArgumentMetadata): ClientDto {
     const { password } = value;
 
@@ -20,7 +22,7 @@ export class ValidatePassword implements PipeTransform<ClientDto, ClientDto> {
       return value;
     }
 
-    if (isPasswordValid(password)) {
+    if (this.validationService.isPasswordValid(password)) {
       return value;
     }
 

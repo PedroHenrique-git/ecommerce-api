@@ -1,10 +1,16 @@
-import { getPagination } from 'src/shared/helpers/general/pagination';
+import { Injectable } from '@nestjs/common';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateCategoryDto } from '../../dto/create-category.dto';
 import { Category } from '../../protocols/category.interface';
 import { CategoryRepository } from '../category.repository';
 
+@Injectable()
 export class InMemoryCategoryRepository extends CategoryRepository {
+  constructor(private paginationService: PaginationService) {
+    super();
+  }
+
   private categories: Category[] = [];
 
   private getNextId() {
@@ -66,12 +72,13 @@ export class InMemoryCategoryRepository extends CategoryRepository {
   find(page: number, take: number): Promise<Pagination<Category[]>> {
     const totalOfItems = this.categories.length;
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/category/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/category/find',
+      });
 
     const results = this.categories.slice(nextSkip, page * take);
 

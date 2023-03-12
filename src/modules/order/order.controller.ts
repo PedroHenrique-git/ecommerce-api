@@ -11,23 +11,25 @@ import {
   Query,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { handlePrismaError } from 'src/shared/helpers/general/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/general/handleRecordNotFound';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { HandleErrorService } from '../common/handleError/handleError.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderService } from './order.service';
 
 @Controller('order')
 export class OrderController {
-  constructor(private orderService: OrderService) {}
+  constructor(
+    private orderService: OrderService,
+    private handleErrorService: HandleErrorService,
+  ) {}
 
   @Post()
   async create(@Body(ValidationSchemaPipe) createOrderDto: CreateOrderDto) {
     try {
       return await this.orderService.create(createOrderDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -39,7 +41,7 @@ export class OrderController {
     try {
       return await this.orderService.update(id, updateOrderDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -49,12 +51,12 @@ export class OrderController {
       const result = await this.orderService.findById(id);
 
       if (!result) {
-        return handleRecordNotFound('Order');
+        return this.handleErrorService.handleRecordNotFound('Order');
       }
 
       return result;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -64,12 +66,12 @@ export class OrderController {
       const result = await this.orderService.findOrderItemsByOrderId(id);
 
       if (!result) {
-        return handleRecordNotFound('Order');
+        return this.handleErrorService.handleRecordNotFound('Order');
       }
 
       return result;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -78,7 +80,7 @@ export class OrderController {
     try {
       return await this.orderService.delete(id);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -92,7 +94,7 @@ export class OrderController {
     try {
       return await this.orderService.find(page, take);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 }

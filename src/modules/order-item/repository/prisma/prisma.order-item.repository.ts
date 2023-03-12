@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
-import { getPagination } from 'src/shared/helpers/general/pagination';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderItemDto } from '../../dto/create-order-item.dto';
 import { OrderItem } from '../../protocols/order-item.interface';
@@ -8,7 +8,10 @@ import { OrderItemRepository } from '../order-item.repository';
 
 @Injectable()
 export class PrismaOrderItemRepository extends OrderItemRepository {
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private paginationService: PaginationService,
+  ) {
     super();
   }
 
@@ -44,12 +47,13 @@ export class PrismaOrderItemRepository extends OrderItemRepository {
   async find(page: number, take: number): Promise<Pagination<OrderItem[]>> {
     const totalOfItems = await this.prisma.orderItem.count();
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/order-item/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/order-item/find',
+      });
 
     const results = await this.prisma.orderItem.findMany({
       include: { orders: true, product: true },

@@ -11,9 +11,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { handlePrismaError } from 'src/shared/helpers/general/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/general/handleRecordNotFound';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { HandleErrorService } from '../common/handleError/handleError.service';
 import { ClientService } from './client.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -23,7 +22,10 @@ import { ValidatePassword } from './pipes/validate-password.pipe';
 
 @Controller('client')
 export class ClientController {
-  constructor(private clientService: ClientService) {}
+  constructor(
+    private clientService: ClientService,
+    private handleErrorService: HandleErrorService,
+  ) {}
 
   @Post()
   async create(
@@ -33,7 +35,7 @@ export class ClientController {
     try {
       return await this.clientService.create(createClientDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -46,7 +48,7 @@ export class ClientController {
     try {
       return await this.clientService.update(id, updateClientDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -56,12 +58,12 @@ export class ClientController {
       const result = await this.clientService.findById(id);
 
       if (!result) {
-        return handleRecordNotFound('Client');
+        return this.handleErrorService.handleRecordNotFound('Client');
       }
 
       return result;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -70,7 +72,7 @@ export class ClientController {
     try {
       return await this.clientService.delete(id);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -84,7 +86,7 @@ export class ClientController {
     try {
       return await this.clientService.find(page, take);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 }

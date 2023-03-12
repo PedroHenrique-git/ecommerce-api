@@ -11,15 +11,18 @@ import {
   Query,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { handlePrismaError } from 'src/shared/helpers/general/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/general/handleRecordNotFound';
+
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { HandleErrorService } from '../common/handleError/handleError.service';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Controller('category')
 export class CategoryController {
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private handleErrorService: HandleErrorService,
+  ) {}
 
   @Post()
   async create(
@@ -28,7 +31,7 @@ export class CategoryController {
     try {
       return await this.categoryService.create(createCategoryDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -40,7 +43,7 @@ export class CategoryController {
     try {
       return await this.categoryService.update(id, updateCategoryDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -50,12 +53,12 @@ export class CategoryController {
       const result = await this.categoryService.findById(id);
 
       if (!result) {
-        return handleRecordNotFound('Category');
+        return this.handleErrorService.handleRecordNotFound('Category');
       }
 
       return result;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -64,7 +67,7 @@ export class CategoryController {
     try {
       return await this.categoryService.delete(id);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -78,7 +81,7 @@ export class CategoryController {
     try {
       return await this.categoryService.find(page, take);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 }

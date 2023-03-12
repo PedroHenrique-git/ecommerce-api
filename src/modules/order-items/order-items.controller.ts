@@ -11,16 +11,18 @@ import {
   Query,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { handlePrismaError } from 'src/shared/helpers/general/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/general/handleRecordNotFound';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { HandleErrorService } from '../common/handleError/handleError.service';
 import { CreateOrderItemsDto } from './dto/create-order-items.dto';
 import { UpdateOrderItemsDto } from './dto/update-order-items.dto';
 import { OrderItemsService } from './order-items.service';
 
 @Controller('order-items')
 export class OrderItemsController {
-  constructor(private orderItemsService: OrderItemsService) {}
+  constructor(
+    private orderItemsService: OrderItemsService,
+    private handleErrorService: HandleErrorService,
+  ) {}
 
   @Post()
   async create(
@@ -29,7 +31,7 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.create(createOrderItemsDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -46,7 +48,7 @@ export class OrderItemsController {
         UpdateOrderItemsDto,
       );
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -62,12 +64,12 @@ export class OrderItemsController {
       );
 
       if (!result) {
-        return handleRecordNotFound('OrderItems');
+        return this.handleErrorService.handleRecordNotFound('OrderItems');
       }
 
       return result;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -79,7 +81,7 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.delete(orderId, orderItemId);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 
@@ -93,7 +95,7 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.find(page, take);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handlePrismaError(err);
     }
   }
 }

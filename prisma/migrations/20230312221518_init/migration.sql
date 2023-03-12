@@ -12,6 +12,8 @@ CREATE TABLE "product" (
 -- CreateTable
 CREATE TABLE "client" (
     "id" SERIAL NOT NULL,
+    "providerId" VARCHAR(25) DEFAULT '',
+    "provider" VARCHAR(25) DEFAULT '',
     "name" VARCHAR(100) NOT NULL,
     "address" VARCHAR(150) NOT NULL,
     "email" VARCHAR(50) NOT NULL,

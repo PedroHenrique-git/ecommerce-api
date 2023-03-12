@@ -21,6 +21,8 @@ model Product {
 
 model Client {
   id Int @default(autoincrement()) @id
+  providerId String? @db.VarChar(25) @default("")
+  provider String? @db.VarChar(25) @default("")
   name String @db.VarChar(100)
   address String @db.VarChar(150)
   email String @db.VarChar(50) @unique

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
-import { getPagination } from 'src/shared/helpers/general/pagination';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateClientDto } from '../../dto/create-client.dto';
 import { UpdateClientDto } from '../../dto/update-client.dto';
@@ -9,7 +9,10 @@ import { ClientRepository } from '../client.repository';
 
 @Injectable()
 export class PrismaClientRepository extends ClientRepository {
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private paginationService: PaginationService,
+  ) {
     super();
   }
 
@@ -23,6 +26,13 @@ export class PrismaClientRepository extends ClientRepository {
   findById(id: number): Promise<Client> {
     return this.prisma.client.findUnique({
       where: { id },
+      include: { orders: true },
+    });
+  }
+
+  findByEmail(email: string): Promise<Client> {
+    return this.prisma.client.findUnique({
+      where: { email },
       include: { orders: true },
     });
   }
@@ -45,12 +55,13 @@ export class PrismaClientRepository extends ClientRepository {
   async find(page: number, take: number): Promise<Pagination<Client[]>> {
     const totalOfItems = await this.prisma.orderItems.count();
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/client/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/client/find',
+      });
 
     const results = await this.prisma.client.findMany({
       include: { orders: true },
