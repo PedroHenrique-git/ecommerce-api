@@ -1,19 +1,31 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { OAuth2Client } from 'google-auth-library';
 import { ClientService } from '../client/client.service';
 import { BcryptService } from '../common/bcrypt/bcrypt.service';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 import { AuthUser } from './protocols/auth-user.interface';
 import { OauthUser } from './protocols/oauth-user.interface';
 
 @Injectable()
 export class AuthService {
+  private google: OAuth2Client;
+
   constructor(
     private clientService: ClientService,
     private jwtService: JwtService,
     private bcryptService: BcryptService,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this.google = new OAuth2Client(
+      this.configService.get('google.clientId'),
+      this.configService.get('google.clientSecret'),
+      'postmessage',
+    );
+  }
 
-  async validateOauthUser(oauthUser: OauthUser) {
+  private async validateOauthUser(oauthUser: OauthUser) {
     const clientFromDB = await this.clientService.findByEmail(oauthUser.email);
 
     if (clientFromDB) {
@@ -30,6 +42,28 @@ export class AuthService {
       cellphone: '',
       password: '',
     });
+  }
+
+  async oauthLogin(googleAuthDto: GoogleAuthDto) {
+    const { tokens } = await this.google.getToken(googleAuthDto.idToken);
+
+    const { id_token } = tokens;
+
+    const ticket = await this.google.verifyIdToken({
+      idToken: id_token,
+      audience: [this.configService.get('google.clientId')],
+    });
+
+    const googleUser = ticket.getPayload();
+
+    const oauthUser: OauthUser = {
+      email: googleUser.email,
+      name: `${googleUser.given_name} ${googleUser.family_name}`,
+      provider: 'google',
+      providerId: googleUser.sub,
+    };
+
+    return this.validateOauthUser(oauthUser);
   }
 
   async validateUser(email: string, password: string): Promise<AuthUser> {

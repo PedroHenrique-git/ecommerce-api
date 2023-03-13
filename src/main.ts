@@ -6,7 +6,10 @@ import { PORT } from './shared/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: { credentials: true, origin: 'http://127.0.0.1:5173' },
+    cors: {
+      credentials: true,
+      origin: ['http://127.0.0.1:5173', 'http://localhost:5173'],
+    },
   });
 
   app.use(helmet());

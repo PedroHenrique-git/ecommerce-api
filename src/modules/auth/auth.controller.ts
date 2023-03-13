@@ -1,15 +1,14 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CookieOptions, Response } from 'express';
 import { AuthService } from './auth.service';
 import { GetAuthUser } from './decorators/get-auth-user.decorator';
 import { Cookie } from './decorators/get-cookie.decorator';
-import { GoogleGuard } from './guards/google.guard';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 import { JwtGuard } from './guards/jwt.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GetUserFromCookie } from './pipe/get-user-from-cookie.pipe';
 import { AuthUser } from './protocols/auth-user.interface';
-import { OauthUser } from './protocols/oauth-user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -53,17 +52,20 @@ export class AuthController {
     return jwt;
   }
 
-  @UseGuards(GoogleGuard)
-  @Get('login-by-google')
-  loginByGoogle() {
-    return { message: 'oauth flow started' };
-  }
+  @Post('login-by-google')
+  async loginByGoogle(
+    @Body() googleAuthDto: GoogleAuthDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { id, email, name } = await this.authService.oauthLogin(
+      googleAuthDto,
+    );
 
-  @UseGuards(GoogleGuard)
-  @Get('google/callback')
-  async googleCallback(@GetAuthUser() user: OauthUser) {
-    await this.authService.validateOauthUser(user);
-    return { message: 'oauth flow finished' };
+    const jwt = this.authService.login({ id, email, name });
+
+    response.cookie(this.cookieName, jwt.access_token, this.createCookieConfig);
+
+    return jwt;
   }
 
   @Get('logout')
