@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
@@ -33,6 +33,7 @@ export class AuthService {
     if (clientFromDB) {
       return clientFromDB;
     }
+
     const { email, name, provider, providerId } = oauthUser;
 
     return this.clientService.create({
@@ -73,6 +74,13 @@ export class AuthService {
 
     if (!client) {
       return null;
+    }
+
+    const isOauthClientWithoutPassword =
+      client.provider && client.providerId && !client.password;
+
+    if (isOauthClientWithoutPassword) {
+      throw new UnauthorizedException();
     }
 
     const isPasswordValid = await this.bcryptService.compare(
