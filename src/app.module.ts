@@ -10,6 +10,7 @@ import { OrderItemModule } from './modules/order-item/order-item.module';
 import { OrderItemsModule } from './modules/order-items/order-items.module';
 import { OrderModule } from './modules/order/order.module';
 import { ProductModule } from './modules/product/product.module';
+import { TokenModule } from './modules/token/token.module';
 import configuration from './shared/config/configuration';
 
 @Module({
@@ -29,6 +30,7 @@ import configuration from './shared/config/configuration';
     OrderModule,
     ClientModule,
     AuthModule,
+    TokenModule,
   ],
 })
 export class AppModule {}

@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { ClientService } from '../client/client.service';
 import { BcryptService } from '../common/bcrypt/bcrypt.service';
+import { TokenService } from '../token/token.service';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { AuthUser } from './protocols/auth-user.interface';
 import { OauthUser } from './protocols/oauth-user.interface';
@@ -14,6 +15,7 @@ export class AuthService {
 
   constructor(
     private clientService: ClientService,
+    private tokenService: TokenService,
     private jwtService: JwtService,
     private bcryptService: BcryptService,
     private configService: ConfigService,
@@ -68,6 +70,11 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<AuthUser> {
     const client = await this.clientService.findByEmail(email);
+
+    if (!client) {
+      return null;
+    }
+
     const isPasswordValid = await this.bcryptService.compare(
       password,
       client.password ?? '',
@@ -84,9 +91,23 @@ export class AuthService {
     return null;
   }
 
-  login(user: AuthUser | OauthUser) {
-    return {
+  async logout(user: AuthUser) {
+    return await this.tokenService.createOrUpdateToken({
+      clientId: user.id,
+      token: '',
+    });
+  }
+
+  async login(user: AuthUser) {
+    const jwt = {
       access_token: this.jwtService.sign(user),
     };
+
+    await this.tokenService.createOrUpdateToken({
+      clientId: user.id,
+      token: jwt.access_token,
+    });
+
+    return jwt;
   }
 }

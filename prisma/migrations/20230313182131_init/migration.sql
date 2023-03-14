@@ -24,6 +24,15 @@ CREATE TABLE "client" (
 );
 
 -- CreateTable
+CREATE TABLE "token" (
+    "id" SERIAL NOT NULL,
+    "client_id" INTEGER NOT NULL,
+    "token" VARCHAR(255) NOT NULL,
+
+    CONSTRAINT "token_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "order" (
     "id" SERIAL NOT NULL,
     "status" VARCHAR(20) NOT NULL,
@@ -61,10 +70,16 @@ CREATE TABLE "category" (
 CREATE UNIQUE INDEX "client_email_key" ON "client"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "token_client_id_key" ON "token"("client_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "order_item_product_id_key" ON "order_item"("product_id");
 
 -- AddForeignKey
 ALTER TABLE "product" ADD CONSTRAINT "product_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "token" ADD CONSTRAINT "token_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order" ADD CONSTRAINT "order_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE CASCADE ON UPDATE CASCADE;

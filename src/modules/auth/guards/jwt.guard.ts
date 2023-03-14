@@ -3,14 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { ClientService } from 'src/modules/client/client.service';
+import { TokenService } from 'src/modules/token/token.service';
 import { AuthUser } from '../protocols/auth-user.interface';
 
 @Injectable()
 export class JwtGuard extends AuthGuard('jwt') {
   constructor(
     private jwtService: JwtService,
-    private clientService: ClientService,
+    private tokenService: TokenService,
     private configService: ConfigService,
   ) {
     super();
@@ -25,17 +25,21 @@ export class JwtGuard extends AuthGuard('jwt') {
       }
 
       const request = context.switchToHttp().getRequest() as Request;
+      const authorizationHeader = request.headers.authorization;
+
+      if (!authorizationHeader) {
+        return false;
+      }
+
       const cookieName = this.configService.get('security.jwtCookieName');
+      const cookieToken = request?.cookies?.[cookieName];
 
-      const jwtToken = request?.cookies?.[cookieName];
-
-      if (!jwtToken) {
+      if (!cookieToken) {
         return false;
       }
 
       const secret = this.configService.get('security.jwtSecret');
-
-      const { id } = this.jwtService.verify<AuthUser>(jwtToken, {
+      const { id } = this.jwtService.verify<AuthUser>(cookieToken, {
         secret,
       });
 
@@ -43,9 +47,14 @@ export class JwtGuard extends AuthGuard('jwt') {
         return false;
       }
 
-      const userExists = await this.clientService.findById(id);
+      const userToken = await this.tokenService.findTokenByClientId(id);
+      const [, headerToken] = authorizationHeader.split(' ');
 
-      if (!userExists) {
+      if (
+        !userToken ||
+        userToken?.token !== cookieToken ||
+        userToken?.token !== headerToken
+      ) {
         return false;
       }
 

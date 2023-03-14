@@ -41,11 +41,11 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(
+  async login(
     @GetAuthUser() user: AuthUser,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const jwt = this.authService.login(user);
+    const jwt = await this.authService.login(user);
 
     response.cookie(this.cookieName, jwt.access_token, this.createCookieConfig);
 
@@ -61,7 +61,7 @@ export class AuthController {
       googleAuthDto,
     );
 
-    const jwt = this.authService.login({ id, email, name });
+    const jwt = await this.authService.login({ id, email, name });
 
     response.cookie(this.cookieName, jwt.access_token, this.createCookieConfig);
 
@@ -69,7 +69,11 @@ export class AuthController {
   }
 
   @Get('logout')
-  logout(@Res({ passthrough: true }) response: Response) {
+  async logout(
+    @Cookie('ecommerce.session', GetUserFromCookie) user: AuthUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.authService.logout(user);
     response.clearCookie(this.cookieName, this.removeCookieConfig);
 
     return { logout: true };

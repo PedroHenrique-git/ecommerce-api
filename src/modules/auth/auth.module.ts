@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { ClientModule } from '../client/client.module';
 import { BcryptService } from '../common/bcrypt/bcrypt.service';
+import { TokenModule } from '../token/token.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategies/google.strategy';
@@ -14,6 +15,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 @Module({
   controllers: [AuthController],
   imports: [
+    TokenModule,
     ClientModule,
     PassportModule,
     JwtModule.registerAsync({
