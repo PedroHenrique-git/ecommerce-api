@@ -1,6 +1,6 @@
+import { Product } from '@prisma/client';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateProductDto } from '../dto/create-product.dto';
-import { Product } from '../protocols/product.interface';
 
 export abstract class ProductRepository {
   abstract create(product: CreateProductDto): Promise<Product>;

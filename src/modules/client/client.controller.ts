@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -62,6 +63,21 @@ export class ClientController {
       }
 
       return result;
+    } catch (err) {
+      return this.handleErrorService.handlePrismaError(err);
+    }
+  }
+
+  @Get('find/orders/:id')
+  async findClientOrderById(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const results = await this.clientService.findClientOrdersById(id);
+
+      if (!results) {
+        throw new NotFoundException('Client not found');
+      }
+
+      return results;
     } catch (err) {
       return this.handleErrorService.handlePrismaError(err);
     }

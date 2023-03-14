@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 
 export type OrderWithProducts = Prisma.OrderGetPayload<{
   include: {
-    client: true;
+    client: false;
     ordersItems: { select: { orderItem: { include: { product: true } } } };
   };
 }>;

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { OrderItem } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateOrderItemDto } from '../../dto/create-order-item.dto';
-import { OrderItem } from '../../protocols/order-item.interface';
 import { OrderItemRepository } from '../order-item.repository';
 
 @Injectable()
@@ -18,14 +18,12 @@ export class PrismaOrderItemRepository extends OrderItemRepository {
   create(orderItem: CreateOrderItemDto): Promise<OrderItem> {
     return this.prisma.orderItem.create({
       data: orderItem,
-      include: { orders: true, product: true },
     });
   }
 
   findById(id: number): Promise<OrderItem> {
     return this.prisma.orderItem.findUnique({
       where: { id },
-      include: { orders: true, product: true },
     });
   }
 
@@ -33,14 +31,12 @@ export class PrismaOrderItemRepository extends OrderItemRepository {
     return this.prisma.orderItem.update({
       where: { id },
       data: orderItem,
-      include: { orders: true, product: true },
     });
   }
 
   delete(id: number): Promise<OrderItem> {
     return this.prisma.orderItem.delete({
       where: { id },
-      include: { orders: true, product: true },
     });
   }
 
@@ -56,7 +52,6 @@ export class PrismaOrderItemRepository extends OrderItemRepository {
       });
 
     const results = await this.prisma.orderItem.findMany({
-      include: { orders: true, product: true },
       skip: nextSkip,
       take,
     });

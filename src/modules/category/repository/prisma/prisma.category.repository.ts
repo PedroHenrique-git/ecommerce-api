@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { Category } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/interfaces/pagination.interface';
 import { CreateCategoryDto } from '../../dto/create-category.dto';
-import { Category } from '../../protocols/category.interface';
+import { CategoryProducts } from '../../protocols/category-products.type';
 import { CategoryRepository } from '../category.repository';
 
 @Injectable()
@@ -18,14 +19,23 @@ export class PrismaCategoryRepository extends CategoryRepository {
   create(category: CreateCategoryDto): Promise<Category> {
     return this.prisma.category.create({
       data: category,
-      include: { products: true },
     });
   }
 
   findById(id: number): Promise<Category> {
     return this.prisma.category.findUnique({
       where: { id },
-      include: { products: true },
+    });
+  }
+
+  findProductsById(id: number): Promise<CategoryProducts> {
+    return this.prisma.category.findUnique({
+      where: { id },
+      select: {
+        products: {
+          include: { orderItem: true },
+        },
+      },
     });
   }
 
@@ -33,14 +43,12 @@ export class PrismaCategoryRepository extends CategoryRepository {
     return this.prisma.category.update({
       where: { id },
       data: category,
-      include: { products: true },
     });
   }
 
   delete(id: number): Promise<Category> {
     return this.prisma.category.delete({
       where: { id },
-      include: { products: true },
     });
   }
 
@@ -56,7 +64,6 @@ export class PrismaCategoryRepository extends CategoryRepository {
       });
 
     const results = await this.prisma.category.findMany({
-      include: { products: true },
       skip: nextSkip,
       take,
     });

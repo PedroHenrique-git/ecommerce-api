@@ -14,6 +14,10 @@ export class CategoryService {
     return this.categoryRepository.findById(id);
   }
 
+  findProductsById(id: number) {
+    return this.categoryRepository.findProductsById(id);
+  }
+
   update(id: number, category: CreateCategoryDto) {
     return this.categoryRepository.update(id, category);
   }

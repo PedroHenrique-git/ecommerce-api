@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -57,6 +58,21 @@ export class CategoryController {
       }
 
       return result;
+    } catch (err) {
+      return this.handleErrorService.handlePrismaError(err);
+    }
+  }
+
+  @Get('find/products/:id')
+  async findProductsById(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const results = await this.categoryService.findProductsById(id);
+
+      if (!results) {
+        throw new NotFoundException('Category not found');
+      }
+
+      return results;
     } catch (err) {
       return this.handleErrorService.handlePrismaError(err);
     }
