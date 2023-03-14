@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -29,7 +30,7 @@ export class OrderController {
     try {
       return await this.orderService.create(createOrderDto);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -41,7 +42,7 @@ export class OrderController {
     try {
       return await this.orderService.update(id, updateOrderDto);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -51,12 +52,12 @@ export class OrderController {
       const result = await this.orderService.findById(id);
 
       if (!result) {
-        return this.handleErrorService.handleRecordNotFound('Order');
+        throw new NotFoundException('Order not found');
       }
 
       return result;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -66,12 +67,12 @@ export class OrderController {
       const result = await this.orderService.findOrderItemsByOrderId(id);
 
       if (!result) {
-        return this.handleErrorService.handleRecordNotFound('Order');
+        throw new NotFoundException('Order not found');
       }
 
       return result;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -80,7 +81,7 @@ export class OrderController {
     try {
       return await this.orderService.delete(id);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -94,7 +95,7 @@ export class OrderController {
     try {
       return await this.orderService.find(page, take);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 }

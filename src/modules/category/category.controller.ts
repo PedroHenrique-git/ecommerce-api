@@ -32,7 +32,7 @@ export class CategoryController {
     try {
       return await this.categoryService.create(createCategoryDto);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -44,7 +44,7 @@ export class CategoryController {
     try {
       return await this.categoryService.update(id, updateCategoryDto);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -54,12 +54,12 @@ export class CategoryController {
       const result = await this.categoryService.findById(id);
 
       if (!result) {
-        return this.handleErrorService.handleRecordNotFound('Category');
+        throw new NotFoundException('Category not found');
       }
 
       return result;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -74,7 +74,7 @@ export class CategoryController {
 
       return results;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -83,7 +83,7 @@ export class CategoryController {
     try {
       return await this.categoryService.delete(id);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -97,7 +97,7 @@ export class CategoryController {
     try {
       return await this.categoryService.find(page, take);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 }

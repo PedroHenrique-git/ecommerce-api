@@ -3,19 +3,15 @@ import { IsOptional, IsString } from 'class-validator';
 export class UpdateClientDto {
   @IsString()
   @IsOptional()
-  providerId: string;
+  providerId?: string;
 
   @IsString()
   @IsOptional()
-  provider: string;
+  provider?: string;
 
   @IsString()
   @IsOptional()
   name: string;
-
-  @IsString()
-  @IsOptional()
-  address: string;
 
   @IsString()
   @IsOptional()
@@ -24,8 +20,4 @@ export class UpdateClientDto {
   @IsString()
   @IsOptional()
   password: string;
-
-  @IsString()
-  @IsOptional()
-  cellphone: string;
 }

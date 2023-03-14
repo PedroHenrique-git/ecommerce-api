@@ -14,23 +14,21 @@ import {
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { HandleErrorService } from '../common/handleError/handleError.service';
-import { CreateOrderItemDto } from './dto/create-order-item.dto';
-import { UpdateOrderItemDto } from './dto/update-order-item.dto';
-import { OrderItemService } from './order-item.service';
+import { AddressService } from './address.service';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
-@Controller('order-item')
-export class OrderItemController {
+@Controller('address')
+export class AddressController {
   constructor(
-    private orderItemService: OrderItemService,
+    private addressService: AddressService,
     private handleErrorService: HandleErrorService,
   ) {}
 
   @Post()
-  async create(
-    @Body(ValidationSchemaPipe) createOrderItemDto: CreateOrderItemDto,
-  ) {
+  async create(@Body(ValidationSchemaPipe) createAddressDto: CreateAddressDto) {
     try {
-      return await this.orderItemService.create(createOrderItemDto);
+      return await this.addressService.create(createAddressDto);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }
@@ -39,10 +37,10 @@ export class OrderItemController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationSchemaPipe) updateOrderItemDto: UpdateOrderItemDto,
+    @Body(ValidationSchemaPipe) updateAddressDto: UpdateAddressDto,
   ) {
     try {
-      return await this.orderItemService.update(id, updateOrderItemDto);
+      return await this.addressService.update(id, updateAddressDto);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }
@@ -51,10 +49,10 @@ export class OrderItemController {
   @Get('find/:id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
-      const result = await this.orderItemService.findById(id);
+      const result = await this.addressService.findById(id);
 
       if (!result) {
-        throw new NotFoundException('OrderItem not found');
+        throw new NotFoundException('Address not found');
       }
 
       return result;
@@ -66,7 +64,7 @@ export class OrderItemController {
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.orderItemService.delete(id);
+      return await this.addressService.delete(id);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }
@@ -80,7 +78,7 @@ export class OrderItemController {
     take: number,
   ) {
     try {
-      return await this.orderItemService.find(page, take);
+      return await this.addressService.find(page, take);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }

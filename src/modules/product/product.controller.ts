@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -46,7 +47,7 @@ export class ProductController {
         image: this.imageService.generateImageUrl(file.filename),
       });
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -63,7 +64,7 @@ export class ProductController {
       if (file) {
         const currentProduct = await this.productService.findById(id);
 
-        if (!currentProduct) throw new Error('Record does not exists');
+        if (!currentProduct) throw new NotFoundException('Product not found');
 
         const filename = this.fileService.extractFilenameFromUrl(
           currentProduct.image,
@@ -80,7 +81,7 @@ export class ProductController {
 
       return updatedProduct;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -90,12 +91,12 @@ export class ProductController {
       const result = await this.productService.findById(id);
 
       if (!result) {
-        return this.handleErrorService.handleRecordNotFound('Product');
+        throw new NotFoundException('Product not found');
       }
 
       return result;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -111,7 +112,7 @@ export class ProductController {
 
       return removedProduct;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -125,7 +126,7 @@ export class ProductController {
     try {
       return await this.productService.find(page, take);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 }

@@ -1,37 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-
-type Error = { error: boolean; message: string };
 
 @Injectable()
 export class HandleErrorService {
-  constructor(private configService: ConfigService) {}
-
-  handleRecordNotFound(controllerName: string) {
-    return { message: `${controllerName} does not exist` };
-  }
-
-  handlePrismaError(err: any): Error {
-    const defaultErrorMessage = this.configService.get('general.errorMessage');
-
+  handleError(err: any) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      return {
-        message: String(err.meta.cause ?? defaultErrorMessage),
-        error: true,
-      };
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          dbCode: err.code,
+          meta: err.meta,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     if (err instanceof Prisma.PrismaClientUnknownRequestError) {
-      return {
-        message: String(err.name ?? defaultErrorMessage),
-        error: true,
-      };
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          name: err.name,
+          message: err.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
-    return {
-      message: String(err.message ?? defaultErrorMessage),
-      error: true,
-    };
+    if (err instanceof HttpException) {
+      throw new HttpException(
+        {
+          status: err.getStatus(),
+          message: err.message,
+        },
+        err.getStatus(),
+      );
+    }
+
+    throw new HttpException(
+      {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: err.message,
+      },
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
 }

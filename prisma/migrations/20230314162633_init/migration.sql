@@ -15,12 +15,30 @@ CREATE TABLE "client" (
     "providerId" VARCHAR(25) DEFAULT '',
     "provider" VARCHAR(25) DEFAULT '',
     "name" VARCHAR(100) NOT NULL,
-    "address" VARCHAR(150) NOT NULL,
     "email" VARCHAR(50) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
-    "cellphone" VARCHAR(30) NOT NULL,
 
     CONSTRAINT "client_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "cellphone" (
+    "id" SERIAL NOT NULL,
+    "client_id" INTEGER NOT NULL,
+    "cellphone" VARCHAR(30) NOT NULL,
+
+    CONSTRAINT "cellphone_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "address" (
+    "id" SERIAL NOT NULL,
+    "street" VARCHAR(100) NOT NULL,
+    "neighborhood" VARCHAR(100) NOT NULL,
+    "cep" VARCHAR(10) NOT NULL,
+    "client_id" INTEGER NOT NULL,
+
+    CONSTRAINT "address_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -77,6 +95,12 @@ CREATE UNIQUE INDEX "order_item_product_id_key" ON "order_item"("product_id");
 
 -- AddForeignKey
 ALTER TABLE "product" ADD CONSTRAINT "product_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cellphone" ADD CONSTRAINT "cellphone_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "address" ADD CONSTRAINT "address_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "token" ADD CONSTRAINT "token_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE CASCADE ON UPDATE CASCADE;

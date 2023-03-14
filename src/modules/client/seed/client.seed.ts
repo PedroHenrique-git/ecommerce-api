@@ -8,8 +8,8 @@ export default function seederClient(quantityOfClients: number) {
 
   for (let i = 1; i <= quantityOfClients; i++) {
     clients.push({
-      address: faker.address.streetAddress(),
-      cellphone: faker.phone.number(),
+      provider: '',
+      providerId: '',
       email: faker.internet.email(),
       name: faker.name.fullName(),
       password: bcrypt.hashSync(faker.internet.password(), NUMBER_OF_SALTS),

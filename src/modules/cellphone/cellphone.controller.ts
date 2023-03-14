@@ -14,23 +14,23 @@ import {
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { HandleErrorService } from '../common/handleError/handleError.service';
-import { CreateOrderItemDto } from './dto/create-order-item.dto';
-import { UpdateOrderItemDto } from './dto/update-order-item.dto';
-import { OrderItemService } from './order-item.service';
+import { CellphoneService } from './cellphone.service';
+import { CreateCellphoneDto } from './dto/create-cellphone.dto';
+import { UpdateCellphoneDto } from './dto/update-cellphone.dto';
 
-@Controller('order-item')
-export class OrderItemController {
+@Controller('cellphone')
+export class CellphoneController {
   constructor(
-    private orderItemService: OrderItemService,
+    private cellphoneService: CellphoneService,
     private handleErrorService: HandleErrorService,
   ) {}
 
   @Post()
   async create(
-    @Body(ValidationSchemaPipe) createOrderItemDto: CreateOrderItemDto,
+    @Body(ValidationSchemaPipe) createCellphoneDto: CreateCellphoneDto,
   ) {
     try {
-      return await this.orderItemService.create(createOrderItemDto);
+      return await this.cellphoneService.create(createCellphoneDto);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }
@@ -39,10 +39,10 @@ export class OrderItemController {
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationSchemaPipe) updateOrderItemDto: UpdateOrderItemDto,
+    @Body(ValidationSchemaPipe) updateCellphoneDto: UpdateCellphoneDto,
   ) {
     try {
-      return await this.orderItemService.update(id, updateOrderItemDto);
+      return await this.cellphoneService.update(id, updateCellphoneDto);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }
@@ -51,10 +51,10 @@ export class OrderItemController {
   @Get('find/:id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
-      const result = await this.orderItemService.findById(id);
+      const result = await this.cellphoneService.findById(id);
 
       if (!result) {
-        throw new NotFoundException('OrderItem not found');
+        throw new NotFoundException('Cellphone not found');
       }
 
       return result;
@@ -66,7 +66,7 @@ export class OrderItemController {
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.orderItemService.delete(id);
+      return await this.cellphoneService.delete(id);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }
@@ -80,7 +80,7 @@ export class OrderItemController {
     take: number,
   ) {
     try {
-      return await this.orderItemService.find(page, take);
+      return await this.cellphoneService.find(page, take);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }

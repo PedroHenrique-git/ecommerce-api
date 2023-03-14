@@ -3,8 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from './app.controller';
+import { AddressModule } from './modules/address/address.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
+import { CellphoneModule } from './modules/cellphone/cellphone.module';
 import { ClientModule } from './modules/client/client.module';
 import { OrderItemModule } from './modules/order-item/order-item.module';
 import { OrderItemsModule } from './modules/order-items/order-items.module';
@@ -23,6 +25,8 @@ import configuration from './shared/config/configuration';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    AddressModule,
+    CellphoneModule,
     CategoryModule,
     ProductModule,
     OrderItemModule,

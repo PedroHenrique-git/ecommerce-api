@@ -36,7 +36,7 @@ export class ClientController {
     try {
       return await this.clientService.create(createClientDto);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -49,7 +49,7 @@ export class ClientController {
     try {
       return await this.clientService.update(id, updateClientDto);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -59,12 +59,12 @@ export class ClientController {
       const result = await this.clientService.findById(id);
 
       if (!result) {
-        return this.handleErrorService.handleRecordNotFound('Client');
+        throw new NotFoundException('Client not found');
       }
 
       return result;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -79,7 +79,7 @@ export class ClientController {
 
       return results;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -88,7 +88,7 @@ export class ClientController {
     try {
       return await this.clientService.delete(id);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -102,7 +102,7 @@ export class ClientController {
     try {
       return await this.clientService.find(page, take);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 }

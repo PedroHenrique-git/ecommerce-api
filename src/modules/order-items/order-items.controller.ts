@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -31,7 +32,7 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.create(createOrderItemsDto);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -48,7 +49,7 @@ export class OrderItemsController {
         UpdateOrderItemsDto,
       );
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -64,12 +65,12 @@ export class OrderItemsController {
       );
 
       if (!result) {
-        return this.handleErrorService.handleRecordNotFound('OrderItems');
+        throw new NotFoundException('OrderItems not found');
       }
 
       return result;
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -81,7 +82,7 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.delete(orderId, orderItemId);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
@@ -95,7 +96,7 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.find(page, take);
     } catch (err) {
-      return this.handleErrorService.handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 }
