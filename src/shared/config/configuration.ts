@@ -35,4 +35,12 @@ export default () => ({
         ? `${process.env.HOST_DEV}/auth/google/callback`
         : `${process.env.HOST_PROD}/auth/google/callback`,
   },
+
+  stripe: {
+    secretKey: process.env.STRIPE_SECRET_KEY,
+  },
+
+  client: {
+    url: process.env.CLIENT_URL,
+  },
 });

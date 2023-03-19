@@ -12,6 +12,7 @@ import { ClientModule } from './modules/client/client.module';
 import { OrderItemModule } from './modules/order-item/order-item.module';
 import { OrderItemsModule } from './modules/order-items/order-items.module';
 import { OrderModule } from './modules/order/order.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { ProductModule } from './modules/product/product.module';
 import { TokenModule } from './modules/token/token.module';
 import configuration from './shared/config/configuration';
@@ -37,6 +38,7 @@ import configuration from './shared/config/configuration';
     ClientModule,
     AuthModule,
     TokenModule,
+    PaymentModule,
   ],
 })
 export class AppModule {}
