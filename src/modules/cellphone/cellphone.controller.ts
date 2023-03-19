@@ -31,7 +31,7 @@ export class CellphoneController {
   ) {}
 
   @Post()
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   async create(
     @Body(ValidationSchemaPipe) createCellphoneDto: CreateCellphoneDto,
@@ -44,7 +44,7 @@ export class CellphoneController {
   }
 
   @Patch(':id')
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -74,7 +74,7 @@ export class CellphoneController {
   }
 
   @Delete(':id')
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {

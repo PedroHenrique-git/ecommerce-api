@@ -31,7 +31,7 @@ export class OrderItemsController {
   ) {}
 
   @Post()
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   async create(
     @Body(ValidationSchemaPipe) createOrderItemsDto: CreateOrderItemsDto,
@@ -44,7 +44,7 @@ export class OrderItemsController {
   }
 
   @Patch(':orderId/:orderItemId')
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   async update(
     @Param('orderId', ParseIntPipe) orderId: number,
@@ -85,7 +85,7 @@ export class OrderItemsController {
   }
 
   @Delete(':orderId/:orderItemId')
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   async delete(
     @Param('orderId', ParseIntPipe) orderId: number,

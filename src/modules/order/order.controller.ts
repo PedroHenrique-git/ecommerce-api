@@ -42,7 +42,7 @@ export class OrderController {
 
   @Public()
   @Patch(':id')
-  @Roles(Role.admin)
+  @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
