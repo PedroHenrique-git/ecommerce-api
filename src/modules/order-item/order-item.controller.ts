@@ -48,7 +48,7 @@ export class OrderItemController {
     }
   }
 
-  @Get('find/:id')
+  @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.orderItemService.findById(id);
@@ -72,7 +72,7 @@ export class OrderItemController {
     }
   }
 
-  @Get('find')
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,

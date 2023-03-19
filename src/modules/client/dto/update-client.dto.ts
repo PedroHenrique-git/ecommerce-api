@@ -11,6 +11,10 @@ export class UpdateClientDto {
 
   @IsString()
   @IsOptional()
+  role?: string;
+
+  @IsString()
+  @IsOptional()
   name: string;
 
   @IsString()

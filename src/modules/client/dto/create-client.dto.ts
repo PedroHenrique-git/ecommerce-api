@@ -10,6 +10,10 @@ export class CreateClientDto {
   provider?: string;
 
   @IsString()
+  @IsOptional()
+  role?: string;
+
+  @IsString()
   name: string;
 
   @IsString()

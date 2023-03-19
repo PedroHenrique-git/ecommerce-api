@@ -1,5 +1,5 @@
 import { Category } from '@prisma/client';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { CategoryProducts } from '../protocols/category-products.type';
 

@@ -53,7 +53,7 @@ export class OrderItemsController {
     }
   }
 
-  @Get('find/:orderId/:orderItemId')
+  @Get(':orderId/:orderItemId')
   async findById(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -86,7 +86,7 @@ export class OrderItemsController {
     }
   }
 
-  @Get('find')
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,

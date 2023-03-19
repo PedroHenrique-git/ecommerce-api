@@ -1,5 +1,5 @@
 import { Cellphone } from '@prisma/client';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateCellphoneDto } from '../dto/create-cellphone.dto';
 import { UpdateCellphoneDto } from '../dto/update-cellphone.dto';
 

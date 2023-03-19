@@ -46,7 +46,7 @@ export class AddressController {
     }
   }
 
-  @Get('find/:id')
+  @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.addressService.findById(id);
@@ -70,7 +70,7 @@ export class AddressController {
     }
   }
 
-  @Get('find')
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,

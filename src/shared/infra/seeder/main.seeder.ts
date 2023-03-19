@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import seederAddress from 'src/modules/address/seed/address.seed';
+import seederAdmin from 'src/modules/admin/seed/admin.seed';
 import seederCategory from 'src/modules/category/seed/category.seed';
 import seederCellphone from 'src/modules/cellphone/seed/cellphone.seed';
 import seederClient from 'src/modules/client/seed/client.seed';
@@ -19,6 +20,7 @@ async function mainSeeder() {
   const clients = seederClient(30);
   const address = seederAddress(30);
   const cellphones = seederCellphone(30);
+  const admin = seederAdmin(30);
 
   await prisma.category.createMany({
     data: categories,
@@ -50,6 +52,10 @@ async function mainSeeder() {
 
   await prisma.cellphone.createMany({
     data: cellphones,
+  });
+
+  await prisma.admin.createMany({
+    data: admin,
   });
 }
 

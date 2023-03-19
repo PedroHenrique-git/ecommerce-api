@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { AdminModule } from '../admin/admin.module';
 
 import { ClientModule } from '../client/client.module';
 import { BcryptService } from '../common/bcrypt/bcrypt.service';
@@ -17,6 +18,7 @@ import { LocalStrategy } from './strategies/local.strategy';
   imports: [
     TokenModule,
     ClientModule,
+    AdminModule,
     PassportModule,
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => {

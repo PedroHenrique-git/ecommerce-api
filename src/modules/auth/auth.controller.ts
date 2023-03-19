@@ -17,8 +17,12 @@ export class AuthController {
     private configService: ConfigService,
   ) {}
 
-  get cookieName() {
-    return this.configService.get('security.jwtCookieName');
+  get cookieNameClient() {
+    return this.configService.get('security.jwtCookieNameClient');
+  }
+
+  get cookieNameAdmin() {
+    return this.configService.get('security.jwtCookieNameAdmin');
   }
 
   get createCookieConfig(): CookieOptions {
@@ -45,9 +49,30 @@ export class AuthController {
     @GetAuthUser() user: AuthUser,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const jwt = await this.authService.login(user);
+    const jwt = await this.authService.loginClient(user);
 
-    response.cookie(this.cookieName, jwt.access_token, this.createCookieConfig);
+    response.cookie(
+      this.cookieNameClient,
+      jwt.access_token,
+      this.createCookieConfig,
+    );
+
+    return jwt;
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('login-admin')
+  async loginAdmin(
+    @GetAuthUser() admin: AuthUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const jwt = await this.authService.loginAdmin(admin);
+
+    response.cookie(
+      this.cookieNameAdmin,
+      jwt.access_token,
+      this.createCookieConfig,
+    );
 
     return jwt;
   }
@@ -57,33 +82,52 @@ export class AuthController {
     @Body() googleAuthDto: GoogleAuthDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { id, email, name } = await this.authService.oauthLogin(
+    const { id, email, name, role } = await this.authService.oauthLogin(
       googleAuthDto,
     );
 
-    const jwt = await this.authService.login({ id, email, name });
+    const jwt = await this.authService.loginClient({ id, email, name, role });
 
-    response.cookie(this.cookieName, jwt.access_token, this.createCookieConfig);
+    response.cookie(
+      this.cookieNameClient,
+      jwt.access_token,
+      this.createCookieConfig,
+    );
 
     return jwt;
   }
 
   @Get('logout')
   async logout(
-    @Cookie('ecommerce.session', GetUserFromCookie) user: AuthUser,
+    @Cookie('client.session', GetUserFromCookie) user: AuthUser,
     @Res({ passthrough: true }) response: Response,
   ) {
     await this.authService.logout(user);
-    response.clearCookie(this.cookieName, this.removeCookieConfig);
+    response.clearCookie(this.cookieNameClient, this.removeCookieConfig);
+
+    return { logout: true };
+  }
+
+  @Get('logout-admin')
+  async logoutAdmin(
+    @Cookie('admin.session', GetUserFromCookie) admin: AuthUser,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.authService.logoutAdmin(admin);
+    response.clearCookie(this.cookieNameAdmin, this.removeCookieConfig);
 
     return { logout: true };
   }
 
   @UseGuards(JwtGuard)
-  @Get('logged-user')
-  getLoggedUser(
-    @Cookie('ecommerce.session', GetUserFromCookie) user: AuthUser,
-  ) {
+  @Get('logged-admin')
+  getLoggedAdmin(@Cookie('admin.session', GetUserFromCookie) admin: AuthUser) {
+    return { admin };
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('logged-client')
+  getLoggedClient(@Cookie('client.session', GetUserFromCookie) user: AuthUser) {
     return { user };
   }
 }

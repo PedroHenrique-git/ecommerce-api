@@ -1,5 +1,5 @@
 import { Address } from '@prisma/client';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateAddressDto } from '../dto/create-address.dto';
 import { UpdateAddressDto } from '../dto/update-address.dto';
 

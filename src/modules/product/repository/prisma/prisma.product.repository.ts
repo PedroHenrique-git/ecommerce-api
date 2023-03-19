@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateProductDto } from '../../dto/create-product.dto';
 import { ProductRepository } from '../product.repository';
 
@@ -48,7 +48,7 @@ export class PrismaProductRepository extends ProductRepository {
         page,
         take,
         totalOfItems,
-        route: '/product/find',
+        route: '/product',
       });
 
     const results = await this.prisma.product.findMany({

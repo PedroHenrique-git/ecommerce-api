@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { GLOBAL_PREFIX } from 'src/shared/constants';
 
 type GetPagination = {
   page: number;
@@ -21,13 +22,13 @@ export class PaginationService {
       page === totalOfPages || totalOfPages === 0 ? null : page + 1;
 
     const nextPageUrl = nextPage
-      ? `${host}${route}?page=${nextPage}&take=${take}`
+      ? `${host}${GLOBAL_PREFIX}${route}?page=${nextPage}&take=${take}`
       : null;
 
     const prevPage = page === 1 ? null : page - 1;
 
     const prevPageUrl = prevPage
-      ? `${host}${route}?page=${prevPage}&take=${take}`
+      ? `${host}${GLOBAL_PREFIX}${route}?page=${prevPage}&take=${take}`
       : null;
 
     return {

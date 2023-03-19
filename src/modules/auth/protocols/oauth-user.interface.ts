@@ -3,4 +3,5 @@ export interface OauthUser {
   provider: string;
   email: string;
   name: string;
+  role: string;
 }

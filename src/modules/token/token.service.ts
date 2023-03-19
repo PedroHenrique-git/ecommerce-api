@@ -10,6 +10,10 @@ export class TokenService {
     return this.tokenRepository.createOrUpdateToken(token);
   }
 
+  findTokenByAdminId(adminId: number) {
+    return this.tokenRepository.findTokenByAdminId(adminId);
+  }
+
   findTokenByClientId(clientId: number) {
     return this.tokenRepository.findTokenByClientId(clientId);
   }

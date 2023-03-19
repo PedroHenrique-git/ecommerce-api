@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
+import { AdminService } from '../admin/admin.service';
 import { ClientService } from '../client/client.service';
 import { BcryptService } from '../common/bcrypt/bcrypt.service';
 import { TokenService } from '../token/token.service';
@@ -15,6 +16,7 @@ export class AuthService {
 
   constructor(
     private clientService: ClientService,
+    private adminService: AdminService,
     private tokenService: TokenService,
     private jwtService: JwtService,
     private bcryptService: BcryptService,
@@ -62,12 +64,39 @@ export class AuthService {
       name: `${googleUser.given_name} ${googleUser.family_name}`,
       provider: 'google',
       providerId: googleUser.sub,
+      role: 'customer',
     };
 
     return this.validateOauthUser(oauthUser);
   }
 
-  async validateUser(email: string, password: string): Promise<AuthUser> {
+  async validateAdmin(
+    email: string,
+    password: string,
+  ): Promise<Omit<AuthUser, 'name'>> {
+    const admin = await this.adminService.findByEmail(email);
+
+    if (!admin) {
+      return null;
+    }
+
+    const isPasswordValid = await this.bcryptService.compare(
+      password,
+      admin.password ?? '',
+    );
+
+    if (admin && isPasswordValid) {
+      return {
+        id: admin.id,
+        email: admin.email,
+        role: admin.role,
+      };
+    }
+
+    return null;
+  }
+
+  async validateClient(email: string, password: string): Promise<AuthUser> {
     const client = await this.clientService.findByEmail(email);
 
     if (!client) {
@@ -91,6 +120,7 @@ export class AuthService {
         id: client.id,
         email: client.email,
         name: client.name,
+        role: client.role,
       };
     }
 
@@ -104,7 +134,27 @@ export class AuthService {
     });
   }
 
-  async login(user: AuthUser) {
+  async logoutAdmin(admin: Omit<AuthUser, 'name'>) {
+    return await this.tokenService.createOrUpdateToken({
+      adminId: admin.id,
+      token: '',
+    });
+  }
+
+  async loginAdmin(admin: Omit<AuthUser, 'name'>) {
+    const jwt = {
+      access_token: this.jwtService.sign(admin),
+    };
+
+    await this.tokenService.createOrUpdateToken({
+      adminId: admin.id,
+      token: jwt.access_token,
+    });
+
+    return jwt;
+  }
+
+  async loginClient(user: AuthUser) {
     const jwt = {
       access_token: this.jwtService.sign(user),
     };

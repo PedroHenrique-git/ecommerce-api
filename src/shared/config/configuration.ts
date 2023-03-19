@@ -23,7 +23,8 @@ export default () => ({
     salts: 10,
     jwtSecret: process.env.JWT_SECRET,
     jwtExpireTime: '1d',
-    jwtCookieName: 'ecommerce.session',
+    jwtCookieNameClient: 'client.session',
+    jwtCookieNameAdmin: 'admin.session',
   },
 
   google: {

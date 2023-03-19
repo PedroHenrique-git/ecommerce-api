@@ -4,6 +4,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AddressModule } from './modules/address/address.module';
+import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
 import { CellphoneModule } from './modules/cellphone/cellphone.module';
@@ -25,6 +26,7 @@ import configuration from './shared/config/configuration';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    AdminModule,
     AddressModule,
     CellphoneModule,
     CategoryModule,

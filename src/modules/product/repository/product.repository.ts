@@ -1,5 +1,5 @@
 import { Product } from '@prisma/client';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateProductDto } from '../dto/create-product.dto';
 
 export abstract class ProductRepository {

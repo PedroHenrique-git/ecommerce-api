@@ -53,7 +53,7 @@ export class ClientController {
     }
   }
 
-  @Get('find/:id')
+  @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.clientService.findById(id);
@@ -68,7 +68,7 @@ export class ClientController {
     }
   }
 
-  @Get('find/orders/:id')
+  @Get(':id/orders')
   async findClientOrderById(@Param('id', ParseIntPipe) id: number) {
     try {
       const results = await this.clientService.findClientOrdersById(id);
@@ -92,7 +92,7 @@ export class ClientController {
     }
   }
 
-  @Get('find')
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,

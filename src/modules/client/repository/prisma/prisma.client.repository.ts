@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Client } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateClientDto } from '../../dto/create-client.dto';
 import { UpdateClientDto } from '../../dto/update-client.dto';
 import { ClientOrders } from '../../protocols/client-orders.type';
@@ -64,14 +64,14 @@ export class PrismaClientRepository extends ClientRepository {
   }
 
   async find(page: number, take: number): Promise<Pagination<Client[]>> {
-    const totalOfItems = await this.prisma.orderItems.count();
+    const totalOfItems = await this.prisma.client.count();
 
     const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
       this.paginationService.getPagination({
         page,
         take,
         totalOfItems,
-        route: '/client/find',
+        route: '/client',
       });
 
     const results = await this.prisma.client.findMany({

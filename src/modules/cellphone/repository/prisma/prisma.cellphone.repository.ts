@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Cellphone } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateCellphoneDto } from '../../dto/create-cellphone.dto';
 import { UpdateCellphoneDto } from '../../dto/update-cellphone.dto';
 import { CellphoneRepository } from '../cellphone.repository';
@@ -44,7 +44,7 @@ export class PrismaCellphoneRepository extends CellphoneRepository {
         page,
         take,
         totalOfItems,
-        route: '/cellphone/find',
+        route: '/cellphone',
       });
 
     const results = await this.prisma.cellphone.findMany({

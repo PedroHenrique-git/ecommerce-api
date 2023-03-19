@@ -2,14 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { PORT } from './shared/constants';
+import { ALLOWED_ORIGINS, GLOBAL_PREFIX, PORT } from './shared/constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
       credentials: true,
-      origin: ['http://127.0.0.1:5173', 'http://localhost:5173'],
+      origin: ALLOWED_ORIGINS,
     },
+  });
+
+  app.setGlobalPrefix(GLOBAL_PREFIX, {
+    exclude: [''],
   });
 
   app.use(helmet());

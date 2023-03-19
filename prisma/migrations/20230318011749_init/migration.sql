@@ -10,10 +10,21 @@ CREATE TABLE "product" (
 );
 
 -- CreateTable
+CREATE TABLE "Admin" (
+    "id" SERIAL NOT NULL,
+    "email" VARCHAR(50) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
+    "role" VARCHAR(20) DEFAULT 'admin',
+
+    CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "client" (
     "id" SERIAL NOT NULL,
     "providerId" VARCHAR(25) DEFAULT '',
     "provider" VARCHAR(25) DEFAULT '',
+    "role" VARCHAR(20) DEFAULT 'customer',
     "name" VARCHAR(100) NOT NULL,
     "email" VARCHAR(50) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
@@ -44,7 +55,8 @@ CREATE TABLE "address" (
 -- CreateTable
 CREATE TABLE "token" (
     "id" SERIAL NOT NULL,
-    "client_id" INTEGER NOT NULL,
+    "client_id" INTEGER,
+    "admin_id" INTEGER,
     "token" VARCHAR(255) NOT NULL,
 
     CONSTRAINT "token_pkey" PRIMARY KEY ("id")
@@ -85,10 +97,16 @@ CREATE TABLE "category" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "client_email_key" ON "client"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "token_client_id_key" ON "token"("client_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "token_admin_id_key" ON "token"("admin_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "order_item_product_id_key" ON "order_item"("product_id");
@@ -104,6 +122,9 @@ ALTER TABLE "address" ADD CONSTRAINT "address_client_id_fkey" FOREIGN KEY ("clie
 
 -- AddForeignKey
 ALTER TABLE "token" ADD CONSTRAINT "token_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "token" ADD CONSTRAINT "token_admin_id_fkey" FOREIGN KEY ("admin_id") REFERENCES "Admin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "order" ADD CONSTRAINT "order_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "client"("id") ON DELETE CASCADE ON UPDATE CASCADE;

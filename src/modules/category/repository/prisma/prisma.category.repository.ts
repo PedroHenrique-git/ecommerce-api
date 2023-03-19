@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Category } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateCategoryDto } from '../../dto/create-category.dto';
 import { CategoryProducts } from '../../protocols/category-products.type';
 import { CategoryRepository } from '../category.repository';
@@ -60,7 +60,7 @@ export class PrismaCategoryRepository extends CategoryRepository {
         page,
         take,
         totalOfItems,
-        route: '/category/find',
+        route: '/category',
       });
 
     const results = await this.prisma.category.findMany({

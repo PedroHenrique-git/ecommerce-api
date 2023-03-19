@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Address } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateAddressDto } from '../../dto/create-address.dto';
 import { UpdateAddressDto } from '../../dto/update-address.dto';
 import { AddressRepository } from '../address.repository';
@@ -44,7 +44,7 @@ export class PrismaAddressRepository extends AddressRepository {
         page,
         take,
         totalOfItems,
-        route: '/address/find',
+        route: '/address',
       });
 
     const results = await this.prisma.address.findMany({

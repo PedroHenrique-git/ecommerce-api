@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OrderItems } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateOrderItemsDto } from '../../dto/create-order-items.dto';
 import { UpdateOrderItemsDto } from '../../dto/update-order-items.dto';
 import { OrderItemsRepository } from '../order-items.repository';
@@ -53,7 +53,7 @@ export class PrismaOrderItemsRepository extends OrderItemsRepository {
         page,
         take,
         totalOfItems,
-        route: '/order-items/find',
+        route: '/order-items',
       });
 
     const results = await this.prisma.orderItems.findMany({

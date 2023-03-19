@@ -11,13 +11,20 @@ export class PrismaTokenRepository extends TokenRepository {
   }
 
   createOrUpdateToken(token: CreateTokenDto): Promise<Token> {
-    const { clientId, token: tokenValue } = token;
+    const { clientId, adminId, token: tokenValue } = token;
 
     return this.prisma.token.upsert({
-      where: { clientId },
+      where: {
+        ...(adminId ? { adminId } : {}),
+        ...(clientId ? { clientId } : {}),
+      },
       create: token,
       update: { token: tokenValue },
     });
+  }
+
+  findTokenByAdminId(adminId: number): Promise<Token> {
+    return this.prisma.token.findUnique({ where: { adminId } });
   }
 
   findTokenByClientId(clientId: number): Promise<Token> {

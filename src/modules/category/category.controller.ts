@@ -48,7 +48,7 @@ export class CategoryController {
     }
   }
 
-  @Get('find/:id')
+  @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.categoryService.findById(id);
@@ -63,7 +63,7 @@ export class CategoryController {
     }
   }
 
-  @Get('find/products/:id')
+  @Get(':id/products')
   async findProductsById(@Param('id', ParseIntPipe) id: number) {
     try {
       const results = await this.categoryService.findProductsById(id);
@@ -87,7 +87,7 @@ export class CategoryController {
     }
   }
 
-  @Get('find')
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,

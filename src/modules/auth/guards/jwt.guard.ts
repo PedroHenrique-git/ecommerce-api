@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { TokenService } from 'src/modules/token/token.service';
+import { Role } from 'src/shared/protocols/role.enum';
 import { AuthUser } from '../protocols/auth-user.interface';
 
 @Injectable()
@@ -31,7 +32,7 @@ export class JwtGuard extends AuthGuard('jwt') {
         return false;
       }
 
-      const cookieName = this.configService.get('security.jwtCookieName');
+      const cookieName = this.configService.get('security.jwtCookieNameClient');
       const cookieToken = request?.cookies?.[cookieName];
 
       if (!cookieToken) {
@@ -39,7 +40,7 @@ export class JwtGuard extends AuthGuard('jwt') {
       }
 
       const secret = this.configService.get('security.jwtSecret');
-      const { id } = this.jwtService.verify<AuthUser>(cookieToken, {
+      const { id, role } = this.jwtService.verify<AuthUser>(cookieToken, {
         secret,
       });
 
@@ -47,7 +48,11 @@ export class JwtGuard extends AuthGuard('jwt') {
         return false;
       }
 
-      const userToken = await this.tokenService.findTokenByClientId(id);
+      const userToken =
+        role === Role.customer
+          ? await this.tokenService.findTokenByClientId(id)
+          : await this.tokenService.findTokenByAdminId(id);
+
       const [, headerToken] = authorizationHeader.split(' ');
 
       if (

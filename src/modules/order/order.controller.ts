@@ -46,7 +46,7 @@ export class OrderController {
     }
   }
 
-  @Get('find/:id')
+  @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.orderService.findById(id);
@@ -61,7 +61,7 @@ export class OrderController {
     }
   }
 
-  @Get('find/order-items/:id')
+  @Get(':id/order-items')
   async findOrderItemsByOrderId(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.orderService.findOrderItemsByOrderId(id);
@@ -85,7 +85,7 @@ export class OrderController {
     }
   }
 
-  @Get('find')
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,
