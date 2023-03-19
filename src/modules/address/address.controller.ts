@@ -10,9 +10,14 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { Role } from 'src/shared/protocols/role.enum';
+import { Public } from '../auth/decorators/public-route.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { HandleErrorService } from '../common/handleError/handleError.service';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
@@ -26,6 +31,8 @@ export class AddressController {
   ) {}
 
   @Post()
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   async create(@Body(ValidationSchemaPipe) createAddressDto: CreateAddressDto) {
     try {
       return await this.addressService.create(createAddressDto);
@@ -35,6 +42,8 @@ export class AddressController {
   }
 
   @Patch(':id')
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationSchemaPipe) updateAddressDto: UpdateAddressDto,
@@ -46,6 +55,7 @@ export class AddressController {
     }
   }
 
+  @Public()
   @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -62,6 +72,8 @@ export class AddressController {
   }
 
   @Delete(':id')
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.addressService.delete(id);
@@ -70,6 +82,7 @@ export class AddressController {
     }
   }
 
+  @Public()
   @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)

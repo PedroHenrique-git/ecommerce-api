@@ -10,9 +10,14 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { Role } from 'src/shared/protocols/role.enum';
+import { Public } from '../auth/decorators/public-route.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { HandleErrorService } from '../common/handleError/handleError.service';
 import { CreateOrderItemsDto } from './dto/create-order-items.dto';
 import { UpdateOrderItemsDto } from './dto/update-order-items.dto';
@@ -26,6 +31,8 @@ export class OrderItemsController {
   ) {}
 
   @Post()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async create(
     @Body(ValidationSchemaPipe) createOrderItemsDto: CreateOrderItemsDto,
   ) {
@@ -37,6 +44,8 @@ export class OrderItemsController {
   }
 
   @Patch(':orderId/:orderItemId')
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async update(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -53,6 +62,7 @@ export class OrderItemsController {
     }
   }
 
+  @Public()
   @Get(':orderId/:orderItemId')
   async findById(
     @Param('orderId', ParseIntPipe) orderId: number,
@@ -75,6 +85,8 @@ export class OrderItemsController {
   }
 
   @Delete(':orderId/:orderItemId')
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async delete(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -86,6 +98,7 @@ export class OrderItemsController {
     }
   }
 
+  @Public()
   @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)

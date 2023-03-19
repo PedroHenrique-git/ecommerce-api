@@ -4,8 +4,10 @@ import { CookieOptions, Response } from 'express';
 import { AuthService } from './auth.service';
 import { GetAuthUser } from './decorators/get-auth-user.decorator';
 import { Cookie } from './decorators/get-cookie.decorator';
+import { Public } from './decorators/public-route.decorator';
 import { GoogleAuthDto } from './dto/google-auth.dto';
-import { JwtGuard } from './guards/jwt.guard';
+import { JwtAdminGuard } from './guards/jwt-admin.guard';
+import { JwtClientGuard } from './guards/jwt-client.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GetUserFromCookie } from './pipe/get-user-from-cookie.pipe';
 import { AuthUser } from './protocols/auth-user.interface';
@@ -43,6 +45,7 @@ export class AuthController {
     };
   }
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(
@@ -60,6 +63,7 @@ export class AuthController {
     return jwt;
   }
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login-admin')
   async loginAdmin(
@@ -77,6 +81,7 @@ export class AuthController {
     return jwt;
   }
 
+  @Public()
   @Post('login-by-google')
   async loginByGoogle(
     @Body() googleAuthDto: GoogleAuthDto,
@@ -97,6 +102,7 @@ export class AuthController {
     return jwt;
   }
 
+  @Public()
   @Get('logout')
   async logout(
     @Cookie('client.session', GetUserFromCookie) user: AuthUser,
@@ -108,6 +114,7 @@ export class AuthController {
     return { logout: true };
   }
 
+  @Public()
   @Get('logout-admin')
   async logoutAdmin(
     @Cookie('admin.session', GetUserFromCookie) admin: AuthUser,
@@ -119,13 +126,15 @@ export class AuthController {
     return { logout: true };
   }
 
-  @UseGuards(JwtGuard)
+  @Public()
+  @UseGuards(JwtAdminGuard)
   @Get('logged-admin')
   getLoggedAdmin(@Cookie('admin.session', GetUserFromCookie) admin: AuthUser) {
     return { admin };
   }
 
-  @UseGuards(JwtGuard)
+  @Public()
+  @UseGuards(JwtClientGuard)
   @Get('logged-client')
   getLoggedClient(@Cookie('client.session', GetUserFromCookie) user: AuthUser) {
     return { user };

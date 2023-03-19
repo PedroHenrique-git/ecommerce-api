@@ -10,9 +10,13 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { Role } from 'src/shared/protocols/role.enum';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { HandleErrorService } from '../common/handleError/handleError.service';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -29,6 +33,8 @@ export class AdminController {
   ) {}
 
   @Post()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async create(
     @Body(ValidationSchemaPipe, ValidateEmail, ValidatePassword, HashPassword)
     createAdminDto: CreateAdminDto,
@@ -41,6 +47,8 @@ export class AdminController {
   }
 
   @Patch(':id')
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationSchemaPipe, ValidateEmail, ValidatePassword, HashPassword)
@@ -54,6 +62,8 @@ export class AdminController {
   }
 
   @Get(':id')
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.adminService.findById(id);
@@ -69,6 +79,8 @@ export class AdminController {
   }
 
   @Delete(':id')
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.adminService.delete(id);
@@ -78,6 +90,8 @@ export class AdminController {
   }
 
   @Get()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,
