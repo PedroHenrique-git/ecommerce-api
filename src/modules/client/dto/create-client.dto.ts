@@ -1,18 +1,24 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateClientDto {
   @IsString()
-  name: string;
+  @IsOptional()
+  providerId?: string;
 
   @IsString()
-  address: string;
+  @IsOptional()
+  provider?: string;
+
+  @IsString()
+  @IsOptional()
+  role?: string;
+
+  @IsString()
+  name: string;
 
   @IsString()
   email: string;
 
   @IsString()
   password: string;
-
-  @IsString()
-  cellphone: string;
 }

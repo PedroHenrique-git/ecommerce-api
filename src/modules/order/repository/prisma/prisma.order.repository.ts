@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
+import { Order } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
-import { getPagination } from 'src/shared/helpers/pagination';
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { PaginationService } from 'src/modules/common/pagination/pagination.service';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateOrderDto } from '../../dto/create-order.dto';
 import { UpdateOrderDto } from '../../dto/update-order.dto';
 import { OrderWithProducts } from '../../protocols/order-with-products.type';
-import { Order } from '../../protocols/order.interface';
 import { OrderRepository } from '../order.repository';
 
 @Injectable()
 export class PrismaOrderRepository extends OrderRepository {
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private paginationService: PaginationService,
+  ) {
     super();
   }
 
   create(order: CreateOrderDto): Promise<Order> {
     return this.prisma.order.create({
       data: order,
-      include: { client: true, ordersItems: true },
     });
   }
 
@@ -25,7 +27,7 @@ export class PrismaOrderRepository extends OrderRepository {
     return this.prisma.order.findUnique({
       where: { id },
       include: {
-        client: true,
+        client: false,
         ordersItems: { select: { orderItem: { include: { product: true } } } },
       },
     });
@@ -34,7 +36,6 @@ export class PrismaOrderRepository extends OrderRepository {
   findById(id: number): Promise<Order> {
     return this.prisma.order.findUnique({
       where: { id },
-      include: { client: true, ordersItems: true },
     });
   }
 
@@ -42,29 +43,27 @@ export class PrismaOrderRepository extends OrderRepository {
     return this.prisma.order.update({
       where: { id },
       data: order,
-      include: { client: true, ordersItems: true },
     });
   }
 
   delete(id: number): Promise<Order> {
     return this.prisma.order.delete({
       where: { id },
-      include: { client: true, ordersItems: true },
     });
   }
 
   async find(page: number, take: number): Promise<Pagination<Order[]>> {
     const totalOfItems = await this.prisma.orderItems.count();
 
-    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } = getPagination({
-      page,
-      take,
-      totalOfItems,
-      route: '/order/find',
-    });
+    const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
+      this.paginationService.getPagination({
+        page,
+        take,
+        totalOfItems,
+        route: '/order',
+      });
 
     const results = await this.prisma.order.findMany({
-      include: { client: true, ordersItems: true },
       skip: nextSkip,
       take,
     });

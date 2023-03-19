@@ -15,6 +15,14 @@ export class ClientService {
     return this.clientRepository.findById(id);
   }
 
+  findClientOrdersById(id: number) {
+    return this.clientRepository.findClientOrdersById(id);
+  }
+
+  findByEmail(email: string) {
+    return this.clientRepository.findByEmail(email);
+  }
+
   update(id: number, client: UpdateClientDto) {
     return this.clientRepository.update(id, client);
   }

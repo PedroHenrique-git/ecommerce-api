@@ -4,36 +4,48 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
-import { handlePrismaError } from 'src/shared/helpers/handlePrismaError';
-import { handleRecordNotFound } from 'src/shared/helpers/handleRecordNotFound';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
+import { Role } from 'src/shared/protocols/role.enum';
+import { Public } from '../auth/decorators/public-route.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { HandleErrorService } from '../common/handleError/handleError.service';
 import { CreateOrderItemsDto } from './dto/create-order-items.dto';
 import { UpdateOrderItemsDto } from './dto/update-order-items.dto';
 import { OrderItemsService } from './order-items.service';
 
 @Controller('order-items')
 export class OrderItemsController {
-  constructor(private orderItemsService: OrderItemsService) {}
+  constructor(
+    private orderItemsService: OrderItemsService,
+    private handleErrorService: HandleErrorService,
+  ) {}
 
   @Post()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async create(
     @Body(ValidationSchemaPipe) createOrderItemsDto: CreateOrderItemsDto,
   ) {
     try {
       return await this.orderItemsService.create(createOrderItemsDto);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
   @Patch(':orderId/:orderItemId')
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async update(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -46,11 +58,12 @@ export class OrderItemsController {
         UpdateOrderItemsDto,
       );
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
-  @Get('find/:orderId/:orderItemId')
+  @Public()
+  @Get(':orderId/:orderItemId')
   async findById(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -62,16 +75,18 @@ export class OrderItemsController {
       );
 
       if (!result) {
-        return handleRecordNotFound('OrderItems');
+        throw new NotFoundException('OrderItems not found');
       }
 
       return result;
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
   @Delete(':orderId/:orderItemId')
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   async delete(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -79,11 +94,12 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.delete(orderId, orderItemId);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 
-  @Get('find')
+  @Public()
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,
@@ -93,7 +109,7 @@ export class OrderItemsController {
     try {
       return await this.orderItemsService.find(page, take);
     } catch (err) {
-      return handlePrismaError(err);
+      return this.handleErrorService.handleError(err);
     }
   }
 }

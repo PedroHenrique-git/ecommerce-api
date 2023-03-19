@@ -19,16 +19,59 @@ model Product {
   @@map("product")
 }
 
-model Client {
+model Admin {
   id Int @default(autoincrement()) @id
-  name String @db.VarChar(100)
-  address String @db.VarChar(150)
   email String @db.VarChar(50) @unique
   password String @db.VarChar(255)
-  cellphone String @db.VarChar(30)
+  role String? @db.VarChar(20) @default("admin")
+  token Token?
+}
+
+model Client {
+  id Int @default(autoincrement()) @id
+  providerId String? @db.VarChar(25) @default("")
+  provider String? @db.VarChar(25) @default("")
+  role String? @db.VarChar(20) @default("customer")
+  name String @db.VarChar(100)
+  email String @db.VarChar(50) @unique
+  password String @db.VarChar(255)
+  token Token?
   orders Order[]
+  addresses Address[]
+  cellphones Cellphone[]
 
   @@map("client")
+}
+
+model Cellphone {
+  id Int @default(autoincrement()) @id
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  clientId Int @map("client_id")
+  cellphone String @db.VarChar(30)
+
+  @@map("cellphone")
+}
+
+model Address {
+  id Int @default(autoincrement()) @id
+  street String @db.VarChar(100)
+  neighborhood String @db.VarChar(100)
+  cep String @db.VarChar(10)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  clientId Int @map("client_id")
+
+  @@map("address")
+}
+
+model Token {
+  id Int @default(autoincrement()) @id
+  client Client? @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  clientId Int? @unique @map("client_id")
+  admin Admin? @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adminId Int? @unique @map("admin_id")
+  token String @db.VarChar(255)
+
+  @@map("token")
 }
 
 model Order {

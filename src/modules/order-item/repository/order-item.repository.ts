@@ -1,6 +1,7 @@
-import { Pagination } from 'src/shared/interfaces/pagination.interface';
+import { OrderItem } from '@prisma/client';
+import { Pagination } from 'src/shared/protocols/pagination.interface';
 import { CreateOrderItemDto } from '../dto/create-order-item.dto';
-import { OrderItem } from '../protocols/order-item.interface';
+import { UpdateOrderItemDto } from '../dto/update-order-item.dto';
 
 export abstract class OrderItemRepository {
   abstract create(orderItem: CreateOrderItemDto): Promise<OrderItem>;
@@ -8,7 +9,7 @@ export abstract class OrderItemRepository {
   abstract find(page: number, take: number): Promise<Pagination<OrderItem[]>>;
   abstract update(
     id: number,
-    orderItem: CreateOrderItemDto,
+    orderItem: UpdateOrderItemDto,
   ): Promise<OrderItem>;
   abstract delete(id: number): Promise<OrderItem>;
 }
