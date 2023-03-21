@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateOrderItemDto } from './dto/create-order-item.dto';
 import { OrderItemRepository } from './repository/order-item.repository';
 
@@ -22,7 +23,7 @@ export class OrderItemService {
     return this.orderItemRepository.delete(id);
   }
 
-  find(page: number, take: number) {
-    return this.orderItemRepository.find(page, take);
+  find(page: number, take: number, sort: Prisma.SortOrder) {
+    return this.orderItemRepository.find(page, take, sort);
   }
 }

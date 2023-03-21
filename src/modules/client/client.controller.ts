@@ -12,6 +12,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { Role } from 'src/shared/protocols/role.enum';
@@ -111,9 +112,11 @@ export class ClientController {
     page: number,
     @Query('take', new DefaultValuePipe(DEFAULT_TAKE), ParseIntPipe)
     take: number,
+    @Query('sort', new DefaultValuePipe(DEFAULT_TAKE))
+    sort: Prisma.SortOrder,
   ) {
     try {
-      return await this.clientService.find(page, take);
+      return await this.clientService.find(page, take, sort);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }

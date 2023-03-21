@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrderItem } from '@prisma/client';
+import { OrderItem, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/modules/common/database/prisma.service';
 import { PaginationService } from 'src/modules/common/pagination/pagination.service';
 import { Pagination } from 'src/shared/protocols/pagination.interface';
@@ -40,7 +40,11 @@ export class PrismaOrderItemRepository extends OrderItemRepository {
     });
   }
 
-  async find(page: number, take: number): Promise<Pagination<OrderItem[]>> {
+  async find(
+    page: number,
+    take: number,
+    sort: Prisma.SortOrder,
+  ): Promise<Pagination<OrderItem[]>> {
     const totalOfItems = await this.prisma.orderItem.count();
 
     const { nextSkip, nextPageUrl, prevPageUrl, totalOfPages } =
@@ -54,6 +58,7 @@ export class PrismaOrderItemRepository extends OrderItemRepository {
     const results = await this.prisma.orderItem.findMany({
       skip: nextSkip,
       take,
+      orderBy: [{ id: sort }],
     });
 
     return {

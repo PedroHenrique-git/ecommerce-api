@@ -12,7 +12,8 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
+import { Prisma } from '@prisma/client';
+import { DEFAULT_PAGE, DEFAULT_SORT, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { Role } from 'src/shared/protocols/role.enum';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -97,9 +98,11 @@ export class AdminController {
     page: number,
     @Query('take', new DefaultValuePipe(DEFAULT_TAKE), ParseIntPipe)
     take: number,
+    @Query('sort', new DefaultValuePipe(DEFAULT_SORT), ParseIntPipe)
+    sort: Prisma.SortOrder,
   ) {
     try {
-      return await this.adminService.find(page, take);
+      return await this.adminService.find(page, take, sort);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }

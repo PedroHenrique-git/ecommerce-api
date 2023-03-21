@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { AdminRepository } from './repository/admin.repository';
@@ -27,7 +28,7 @@ export class AdminService {
     return this.adminRepository.delete(id);
   }
 
-  find(page: number, take: number) {
-    return this.adminRepository.find(page, take);
+  find(page: number, take: number, sort: Prisma.SortOrder) {
+    return this.adminRepository.find(page, take, sort);
   }
 }

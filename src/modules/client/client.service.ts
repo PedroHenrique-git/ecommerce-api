@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { ClientRepository } from './repository/client.repository';
@@ -31,7 +32,7 @@ export class ClientService {
     return this.clientRepository.delete(id);
   }
 
-  find(page: number, take: number) {
-    return this.clientRepository.find(page, take);
+  find(page: number, take: number, sort: Prisma.SortOrder) {
+    return this.clientRepository.find(page, take, sort);
   }
 }

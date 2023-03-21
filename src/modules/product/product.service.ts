@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductRepository } from './repository/product.repository';
 
@@ -22,7 +23,7 @@ export class ProductService {
     return this.productRepository.delete(id);
   }
 
-  find(page: number, take: number) {
-    return this.productRepository.find(page, take);
+  find(page: number, take: number, sort: Prisma.SortOrder) {
+    return this.productRepository.find(page, take, sort);
   }
 }

@@ -25,12 +25,6 @@ export class JwtClientGuard extends AuthGuard('jwt') {
       }
 
       const request = context.switchToHttp().getRequest() as Request;
-      const authorizationHeader = request.headers.authorization;
-
-      if (!authorizationHeader) {
-        return false;
-      }
-
       const cookieName = this.configService.get('security.jwtCookieNameClient');
       const cookieToken = request?.cookies?.[cookieName];
 
@@ -49,13 +43,7 @@ export class JwtClientGuard extends AuthGuard('jwt') {
 
       const userToken = await this.tokenService.findTokenByClientId(id);
 
-      const [, headerToken] = authorizationHeader.split(' ');
-
-      if (
-        !userToken ||
-        userToken?.token !== cookieToken ||
-        userToken?.token !== headerToken
-      ) {
+      if (!userToken || userToken?.token !== cookieToken) {
         return false;
       }
 

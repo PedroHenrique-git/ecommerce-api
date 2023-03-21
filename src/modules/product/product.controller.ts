@@ -15,7 +15,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
+import { Prisma } from '@prisma/client';
+import { DEFAULT_PAGE, DEFAULT_SORT, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { Role } from 'src/shared/protocols/role.enum';
 import { Public } from '../auth/decorators/public-route.decorator';
@@ -135,9 +136,11 @@ export class ProductController {
     page: number,
     @Query('take', new DefaultValuePipe(DEFAULT_TAKE), ParseIntPipe)
     take: number,
+    @Query('sort', new DefaultValuePipe(DEFAULT_SORT))
+    sort: Prisma.SortOrder,
   ) {
     try {
-      return await this.productService.find(page, take);
+      return await this.productService.find(page, take, sort);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }

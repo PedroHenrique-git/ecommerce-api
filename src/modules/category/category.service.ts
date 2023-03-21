@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryRepository } from './repository/category.repository';
 
@@ -26,7 +27,7 @@ export class CategoryService {
     return this.categoryRepository.delete(id);
   }
 
-  find(page: number, take: number) {
-    return this.categoryRepository.find(page, take);
+  find(page: number, take: number, sort: Prisma.SortOrder) {
+    return this.categoryRepository.find(page, take, sort);
   }
 }

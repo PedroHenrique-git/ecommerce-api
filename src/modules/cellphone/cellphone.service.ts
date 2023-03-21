@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateCellphoneDto } from './dto/create-cellphone.dto';
 import { UpdateCellphoneDto } from './dto/update-cellphone.dto';
 import { CellphoneRepository } from './repository/cellphone.repository';
@@ -23,7 +24,7 @@ export class CellphoneService {
     return this.cellphoneRepository.delete(id);
   }
 
-  find(page: number, take: number) {
-    return this.cellphoneRepository.find(page, take);
+  find(page: number, take: number, sort: Prisma.SortOrder) {
+    return this.cellphoneRepository.find(page, take, sort);
   }
 }

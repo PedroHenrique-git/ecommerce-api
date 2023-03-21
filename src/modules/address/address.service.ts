@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressRepository } from './repository/address.repository';
@@ -23,7 +24,7 @@ export class AddressService {
     return this.addressRepository.delete(id);
   }
 
-  find(page: number, take: number) {
-    return this.addressRepository.find(page, take);
+  find(page: number, take: number, sort: Prisma.SortOrder) {
+    return this.addressRepository.find(page, take, sort);
   }
 }

@@ -2,6 +2,7 @@
 export const DEFAULT_SKIP = 0;
 export const DEFAULT_TAKE = 10;
 export const DEFAULT_PAGE = 1;
+export const DEFAULT_SORT = 'asc';
 
 // infra
 export const PORT = process.env.PORT ?? 3000;

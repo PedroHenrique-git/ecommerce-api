@@ -12,7 +12,8 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { DEFAULT_PAGE, DEFAULT_TAKE } from 'src/shared/constants';
+import { Prisma } from '@prisma/client';
+import { DEFAULT_PAGE, DEFAULT_SORT, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { Role } from 'src/shared/protocols/role.enum';
 import { Public } from '../auth/decorators/public-route.decorator';
@@ -89,9 +90,11 @@ export class AddressController {
     page: number,
     @Query('take', new DefaultValuePipe(DEFAULT_TAKE), ParseIntPipe)
     take: number,
+    @Query('sort', new DefaultValuePipe(DEFAULT_SORT))
+    sort: Prisma.SortOrder,
   ) {
     try {
-      return await this.addressService.find(page, take);
+      return await this.addressService.find(page, take, sort);
     } catch (err) {
       return this.handleErrorService.handleError(err);
     }
