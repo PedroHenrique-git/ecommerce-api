@@ -6,8 +6,7 @@ import { GetAuthUser } from './decorators/get-auth-user.decorator';
 import { Cookie } from './decorators/get-cookie.decorator';
 import { Public } from './decorators/public-route.decorator';
 import { GoogleAuthDto } from './dto/google-auth.dto';
-import { JwtAdminGuard } from './guards/jwt-admin.guard';
-import { JwtClientGuard } from './guards/jwt-client.guard';
+import { JwtGuard } from './guards/jwt.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GetUserFromCookie } from './pipe/get-user-from-cookie.pipe';
 import { AuthUser } from './protocols/auth-user.interface';
@@ -126,15 +125,13 @@ export class AuthController {
     return { logout: true };
   }
 
-  @Public()
-  @UseGuards(JwtAdminGuard)
+  @UseGuards(JwtGuard)
   @Get('logged-admin')
   getLoggedAdmin(@Cookie('admin.session', GetUserFromCookie) admin: AuthUser) {
     return { admin };
   }
 
-  @Public()
-  @UseGuards(JwtClientGuard)
+  @UseGuards(JwtGuard)
   @Get('logged-client')
   getLoggedClient(@Cookie('client.session', GetUserFromCookie) user: AuthUser) {
     return { user };

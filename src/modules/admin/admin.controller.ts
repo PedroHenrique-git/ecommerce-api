@@ -33,9 +33,9 @@ export class AdminController {
     private handleErrorService: HandleErrorService,
   ) {}
 
-  @Post()
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Post()
   async create(
     @Body(ValidationSchemaPipe, ValidateEmail, ValidatePassword, HashPassword)
     createAdminDto: CreateAdminDto,
@@ -47,9 +47,9 @@ export class AdminController {
     }
   }
 
-  @Patch(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationSchemaPipe, ValidateEmail, ValidatePassword, HashPassword)
@@ -62,9 +62,9 @@ export class AdminController {
     }
   }
 
-  @Get(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
       const result = await this.adminService.findById(id);
@@ -79,9 +79,9 @@ export class AdminController {
     }
   }
 
-  @Delete(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.adminService.delete(id);
@@ -90,9 +90,9 @@ export class AdminController {
     }
   }
 
-  @Get()
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
     page: number,

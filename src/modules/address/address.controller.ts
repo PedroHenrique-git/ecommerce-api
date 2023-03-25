@@ -31,9 +31,8 @@ export class AddressController {
     private handleErrorService: HandleErrorService,
   ) {}
 
+  @Public()
   @Post()
-  @Roles(Role.admin, Role.customer)
-  @UseGuards(RolesGuard)
   async create(@Body(ValidationSchemaPipe) createAddressDto: CreateAddressDto) {
     try {
       return await this.addressService.create(createAddressDto);
@@ -42,9 +41,9 @@ export class AddressController {
     }
   }
 
-  @Patch(':id')
   @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
+  @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationSchemaPipe) updateAddressDto: UpdateAddressDto,
@@ -56,7 +55,8 @@ export class AddressController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -72,9 +72,9 @@ export class AddressController {
     }
   }
 
-  @Delete(':id')
   @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
+  @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.addressService.delete(id);
@@ -83,7 +83,8 @@ export class AddressController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)

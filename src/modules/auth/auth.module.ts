@@ -10,7 +10,7 @@ import { BcryptService } from '../common/bcrypt/bcrypt.service';
 import { TokenModule } from '../token/token.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JwtAdminGuard } from './guards/jwt-admin.guard';
+import { JwtGuard } from './guards/jwt.guard';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -40,7 +40,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtStrategy,
     BcryptService,
     GoogleStrategy,
-    { provide: APP_GUARD, useClass: JwtAdminGuard },
+    { provide: APP_GUARD, useClass: JwtGuard },
   ],
   exports: [AuthService],
 })

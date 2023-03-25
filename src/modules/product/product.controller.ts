@@ -39,9 +39,9 @@ export class ProductController {
     private handleErrorService: HandleErrorService,
   ) {}
 
-  @Post()
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Post()
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @UploadedFile()
@@ -59,9 +59,9 @@ export class ProductController {
     }
   }
 
-  @Patch(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -111,9 +111,9 @@ export class ProductController {
     }
   }
 
-  @Delete(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       const removedProduct = await this.productService.delete(id);

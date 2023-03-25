@@ -31,9 +31,9 @@ export class CategoryController {
     private handleErrorService: HandleErrorService,
   ) {}
 
-  @Post()
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Post()
   async create(
     @Body(ValidationSchemaPipe) createCategoryDto: CreateCategoryDto,
   ) {
@@ -44,9 +44,9 @@ export class CategoryController {
     }
   }
 
-  @Patch(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationSchemaPipe) updateCategoryDto: CreateCategoryDto,
@@ -90,9 +90,9 @@ export class CategoryController {
     }
   }
 
-  @Delete(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.categoryService.delete(id);

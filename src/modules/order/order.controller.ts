@@ -16,7 +16,6 @@ import { Prisma } from '@prisma/client';
 import { DEFAULT_PAGE, DEFAULT_SORT, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { Role } from 'src/shared/protocols/role.enum';
-import { Public } from '../auth/decorators/public-route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { HandleErrorService } from '../common/handleError/handleError.service';
@@ -31,7 +30,8 @@ export class OrderController {
     private handleErrorService: HandleErrorService,
   ) {}
 
-  @Public()
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   @Post()
   async create(@Body(ValidationSchemaPipe) createOrderDto: CreateOrderDto) {
     try {
@@ -41,10 +41,9 @@ export class OrderController {
     }
   }
 
-  @Public()
-  @Patch(':id')
-  @Roles(Role.admin, Role.customer)
+  @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationSchemaPipe) updateOrderDto: UpdateOrderDto,
@@ -56,7 +55,8 @@ export class OrderController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -72,7 +72,8 @@ export class OrderController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   @Get(':id/order-items')
   async findOrderItemsByOrderId(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -88,9 +89,9 @@ export class OrderController {
     }
   }
 
-  @Delete(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.orderService.delete(id);
@@ -99,7 +100,8 @@ export class OrderController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)

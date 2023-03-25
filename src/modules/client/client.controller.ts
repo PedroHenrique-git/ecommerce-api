@@ -47,9 +47,9 @@ export class ClientController {
     }
   }
 
-  @Patch(':id')
   @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
+  @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationSchemaPipe, ValidateEmail, ValidatePassword, HashPassword)
@@ -62,7 +62,8 @@ export class ClientController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   @Get(':id')
   async findById(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -78,7 +79,8 @@ export class ClientController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin, Role.customer)
+  @UseGuards(RolesGuard)
   @Get(':id/orders')
   async findClientOrderById(@Param('id', ParseIntPipe) id: number) {
     try {
@@ -94,9 +96,9 @@ export class ClientController {
     }
   }
 
-  @Delete(':id')
   @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     try {
       return await this.clientService.delete(id);
@@ -105,7 +107,8 @@ export class ClientController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)

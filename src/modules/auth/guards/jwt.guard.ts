@@ -9,7 +9,7 @@ import { IS_PUBLIC_KEY } from '../decorators/public-route.decorator';
 import { AuthUser } from '../protocols/auth-user.interface';
 
 @Injectable()
-export class JwtAdminGuard extends AuthGuard('jwt') {
+export class JwtGuard extends AuthGuard('jwt') {
   constructor(
     private jwtService: JwtService,
     private tokenService: TokenService,
@@ -37,28 +37,37 @@ export class JwtAdminGuard extends AuthGuard('jwt') {
       }
 
       const request = context.switchToHttp().getRequest() as Request;
-      const cookieName = this.configService.get('security.jwtCookieNameAdmin');
-      const cookieToken = request?.cookies?.[cookieName];
+
+      const authContext = request?.headers?.['auth-context'] as
+        | 'client'
+        | 'admin';
+
+      const targetCookie =
+        authContext === 'admin'
+          ? this.configService.get('security.jwtCookieNameAdmin')
+          : this.configService.get('security.jwtCookieNameClient');
+
+      const cookieToken = request?.cookies?.[targetCookie];
 
       if (!cookieToken) {
         return false;
       }
 
       const secret = this.configService.get('security.jwtSecret');
-      const { id } = this.jwtService.verify<Omit<AuthUser, 'name'>>(
-        cookieToken,
-        {
-          secret,
-        },
-      );
+      const { id } = this.jwtService.verify<AuthUser>(cookieToken, {
+        secret,
+      });
 
       if (!id) {
         return false;
       }
 
-      const adminToken = await this.tokenService.findTokenByAdminId(id);
+      const userToken =
+        authContext === 'admin'
+          ? await this.tokenService.findTokenByAdminId(id)
+          : await this.tokenService.findTokenByClientId(id);
 
-      if (!adminToken || adminToken?.token !== cookieToken) {
+      if (!userToken || userToken?.token !== cookieToken) {
         return false;
       }
 

@@ -16,7 +16,6 @@ import { Prisma } from '@prisma/client';
 import { DEFAULT_PAGE, DEFAULT_SORT, DEFAULT_TAKE } from 'src/shared/constants';
 import { ValidationSchemaPipe } from 'src/shared/pipes/validation-schema.pipe';
 import { Role } from 'src/shared/protocols/role.enum';
-import { Public } from '../auth/decorators/public-route.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { HandleErrorService } from '../common/handleError/handleError.service';
@@ -31,9 +30,9 @@ export class OrderItemsController {
     private handleErrorService: HandleErrorService,
   ) {}
 
-  @Post()
-  @Roles(Role.admin, Role.customer)
+  @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Post()
   async create(
     @Body(ValidationSchemaPipe) createOrderItemsDto: CreateOrderItemsDto,
   ) {
@@ -44,9 +43,9 @@ export class OrderItemsController {
     }
   }
 
-  @Patch(':orderId/:orderItemId')
-  @Roles(Role.admin, Role.customer)
+  @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Patch(':orderId/:orderItemId')
   async update(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -63,7 +62,8 @@ export class OrderItemsController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   @Get(':orderId/:orderItemId')
   async findById(
     @Param('orderId', ParseIntPipe) orderId: number,
@@ -85,9 +85,9 @@ export class OrderItemsController {
     }
   }
 
-  @Delete(':orderId/:orderItemId')
-  @Roles(Role.admin, Role.customer)
+  @Roles(Role.admin)
   @UseGuards(RolesGuard)
+  @Delete(':orderId/:orderItemId')
   async delete(
     @Param('orderId', ParseIntPipe) orderId: number,
     @Param('orderItemId', ParseIntPipe) orderItemId: number,
@@ -99,7 +99,8 @@ export class OrderItemsController {
     }
   }
 
-  @Public()
+  @Roles(Role.admin)
+  @UseGuards(RolesGuard)
   @Get()
   async find(
     @Query('page', new DefaultValuePipe(DEFAULT_PAGE), ParseIntPipe)
