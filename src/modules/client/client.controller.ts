@@ -65,9 +65,19 @@ export class ClientController {
   @Roles(Role.admin, Role.customer)
   @UseGuards(RolesGuard)
   @Get(':id')
-  async findById(@Param('id', ParseIntPipe) id: number) {
+  async findById(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('showCellphones', new DefaultValuePipe(false))
+    showCellphones: boolean,
+    @Query('showAddresses', new DefaultValuePipe(false))
+    showAddresses: boolean,
+  ) {
     try {
-      const result = await this.clientService.findById(id);
+      const result = await this.clientService.findById(
+        id,
+        showCellphones,
+        showAddresses,
+      );
 
       if (!result) {
         throw new NotFoundException('Client not found');

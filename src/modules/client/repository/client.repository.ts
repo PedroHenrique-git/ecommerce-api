@@ -6,7 +6,11 @@ import { ClientOrders } from '../protocols/client-orders.type';
 
 export abstract class ClientRepository {
   abstract create(client: CreateClientDto): Promise<Client>;
-  abstract findById(id: number): Promise<Client>;
+  abstract findById(
+    id: number,
+    showCellphones: boolean,
+    showAddresses: boolean,
+  ): Promise<Client>;
   abstract findByEmail(email: string): Promise<Client>;
   abstract find(
     page: number,

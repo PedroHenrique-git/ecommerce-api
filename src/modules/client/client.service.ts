@@ -12,8 +12,8 @@ export class ClientService {
     return this.clientRepository.create(client);
   }
 
-  findById(id: number) {
-    return this.clientRepository.findById(id);
+  findById(id: number, showCellphones: boolean, showAddresses: boolean) {
+    return this.clientRepository.findById(id, showCellphones, showAddresses);
   }
 
   findClientOrdersById(id: number) {

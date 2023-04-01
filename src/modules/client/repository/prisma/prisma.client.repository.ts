@@ -38,9 +38,31 @@ export class PrismaClientRepository extends ClientRepository {
     });
   }
 
-  findById(id: number): Promise<Client> {
+  findById(
+    id: number,
+    showCellphones: boolean,
+    showAddresses: boolean,
+  ): Promise<Client> {
+    const include: Prisma.ClientInclude = {};
+
+    if (showCellphones) {
+      include.cellphones = { select: { id: true, cellphone: true } };
+    }
+
+    if (showAddresses) {
+      include.addresses = {
+        select: {
+          id: true,
+          cep: true,
+          neighborhood: true,
+          street: true,
+        },
+      };
+    }
+
     return this.prisma.client.findUnique({
       where: { id },
+      ...(showCellphones || showAddresses ? { include } : {}),
     });
   }
 
